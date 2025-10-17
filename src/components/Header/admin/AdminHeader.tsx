@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Flex, Grid, Typography, Avatar } from 'antd';
+import { Layout, Menu, Button, Flex, Grid, Typography, Avatar, Modal, App } from 'antd';
 import {
     AppstoreOutlined,
     UserOutlined,
@@ -18,13 +18,13 @@ interface AdminHeaderProps {
 const menuItems = [
     { key: '/admin/profile', icon: <UserOutlined />, label: 'Perfil' },
     { key: '/admin/users', icon: <AppstoreOutlined />, label: 'Gestión de Usuarios' },
-    { key: '/login', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
+    { key: 'logout', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
 ];
 
 export const AdminHeader: React.FC<AdminHeaderProps> = ({ onMenuClick }) => {
     const screens = useBreakpoint();
-
     const navigate = useNavigate();
+    const { modal } = App.useApp();
 
     const headerStyle: React.CSSProperties = {
         backgroundColor: '#003366',
@@ -44,7 +44,20 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onMenuClick }) => {
     };
 
     const handleMenuClick = ({ key }: { key: string }) => {
-        navigate(key);
+        if (key === 'logout') {
+            modal.confirm({
+                title: 'Confirmar Cierre de Sesión',
+                content: '¿Estás seguro de que deseas cerrar sesión?',
+                okText: 'Sí, cerrar sesión',
+                cancelText: 'Cancelar',
+                onOk: () => {
+                    localStorage.removeItem('authToken');
+                    navigate('/');
+                },
+            });
+        } else {
+            navigate(key);
+        }
     };
 
     return (
@@ -84,3 +97,4 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onMenuClick }) => {
         </Header>
     );
 };
+

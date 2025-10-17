@@ -64,7 +64,6 @@ export const LoginView: React.FC = () => {
 
             const response = await loginUser(userData);
             saveToken(response.jwttoken);
-            
             const userRole = response.role;
 
             if (userRole) {
@@ -147,4 +146,3 @@ export const LoginView: React.FC = () => {
         </ConfigProvider>
     );
 };
-
