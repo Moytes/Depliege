@@ -19,16 +19,15 @@ const contentStyle: React.CSSProperties = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '24px 16px', // ANTES: '24px'
+    padding: '24px 16px',
     backgroundColor: '#f4f6f8',
 };
 
 export const ResponsiveView = () => {
     const navigate = useNavigate();
 
-    const handleLoginSuccess = () => {
-        alert('¡Inicio de sesión exitoso!');
-    };
+    // Se elimina la función handleLoginSuccess, ya no es necesaria.
+    // El componente LoginView ahora maneja todo el proceso internamente.
 
     return (
         <ConfigProvider theme={{ token: { colorPrimary: colors.green, colorPrimaryHover: colors.greenDark } }}>
@@ -39,7 +38,8 @@ export const ResponsiveView = () => {
                     <Routes>
                         <Route 
                             path="/login" 
-                            element={<LoginView onLoginSuccess={handleLoginSuccess} />} 
+                            // Se elimina la prop 'onLoginSuccess' porque LoginView ya maneja la redirección.
+                            element={<LoginView />} 
                         />
                         <Route 
                             path="/register" 
@@ -47,7 +47,8 @@ export const ResponsiveView = () => {
                         />
                         <Route 
                             path="*" 
-                            element={<LoginView onLoginSuccess={handleLoginSuccess} />} 
+                            // Se elimina también aquí la prop 'onLoginSuccess'.
+                            element={<LoginView />} 
                         />
                     </Routes>
                 </Content>

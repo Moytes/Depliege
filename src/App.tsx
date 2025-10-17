@@ -1,11 +1,12 @@
 import React from 'react';
 import 'antd/dist/reset.css';
+import { App as AntApp } from 'antd';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ResponsiveView } from './views/landing/Inicio/ResponsiveView';
 
 import { AdminLayout } from './views/admin/AdminLayout';
-import { UserLayout } from './views/user/UserLayout'; // 2. Se importa el nuevo UserLayout
+import { UserLayout } from './views/user/UserLayout';
 import { AdminWelcomeView } from './views/admin/page/dashboard/AdminWelcomeView';
 import { AdminProfileView } from './views/admin/page/perfile/AdminProfileView';
 import { UserManagementView } from './views/admin/page/gestionuser/UserManagementView';
@@ -14,7 +15,7 @@ import { WelcomeUserView } from './views/user/dasbord/WelcomeUserView';
 
 function App() {
     return (
-        <>
+        <AntApp>
             <CssBaseline />
             <BrowserRouter>
                 <Routes>
@@ -32,8 +33,9 @@ function App() {
                     <Route path="/*" element={<ResponsiveView />} />
                 </Routes>
             </BrowserRouter>
-        </>
+        </AntApp>
     );
 }
 
 export default App;
+

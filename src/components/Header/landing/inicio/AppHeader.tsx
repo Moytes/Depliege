@@ -1,16 +1,22 @@
 import React from 'react';
 import { Layout, Flex, Button, Typography, Grid, Image } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
+import { useLocation } from 'react-router-dom'; // <-- 1. Importar el hook
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
 
 interface AppHeaderProps {
-    onRegisterClick: () => void;
+    // 2. Hacemos la prop opcional, ya que no siempre será necesaria
+    onRegisterClick?: () => void; 
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
     const screens = useBreakpoint();
+    const location = useLocation(); // <-- 3. Obtener la información de la ruta actual
+
+    // 4. Definimos la condición: mostrar el botón si la ruta NO es '/registro'
+    const showRegisterButton = location.pathname !== '/registro';
 
     const headerStyle: React.CSSProperties = {
         position: 'sticky',
@@ -52,10 +58,18 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
                         Invernaderos UTEQ
                     </Typography.Title>
                 </Flex>
-
-                <Button size={buttonSize} type="primary" icon={<UserAddOutlined />} onClick={onRegisterClick}>
-                    Registrar
-                </Button>
+                
+                {/* 5. Renderizado condicional del botón */}
+                {showRegisterButton && (
+                    <Button 
+                        size={buttonSize} 
+                        type="primary" 
+                        icon={<UserAddOutlined />} 
+                        onClick={onRegisterClick}
+                    >
+                        Registrar
+                    </Button>
+                )}
             </Flex>
         </Header>
     );

@@ -1,13 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Menu, Button, Flex, Grid, Typography, Avatar } from 'antd';
-import {
-    LineChartOutlined,
-    ExperimentOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-    MenuOutlined
-} from '@ant-design/icons';
+import {LineChartOutlined,ExperimentOutlined,SettingOutlined,LogoutOutlined,MenuOutlined} from '@ant-design/icons';
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -57,7 +51,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
                 <Flex align="center" gap="middle">
                     <Avatar
                         size={40}
-                        src="/uteq-logo2.png" // Mismo logo
+                        src="/uteq-logo2.png"   
                         style={{ backgroundColor: 'white', padding: '4px' }}
                     />
                     <Typography.Title level={4} style={titleStyle}>
