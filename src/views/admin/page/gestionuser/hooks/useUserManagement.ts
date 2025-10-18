@@ -1,5 +1,3 @@
-// src/views/admin/page/gestionuser/hooks/useUserManagement.ts
-
 import React from 'react';
 import { App } from 'antd';
 import { UserDTO, UserTableType, ROLES } from '../../../../../types/admin/gestionuser/index';
@@ -9,8 +7,8 @@ const mapUserDTOToTableType = (user: UserDTO): UserTableType => ({
     key: user.id,
     id: user.id,
     name: user.userName,
-    email: user.mail,
-    role: ROLES[user.role] || 'Desconocido',
+    email: user.email,
+    role: ROLES[user.role] || 'Desconocido', 
     roleId: user.role,
 });
 

@@ -1,10 +1,8 @@
-// src/views/admin/page/gestionuser/types/index.ts
-
 export interface UserDTO {
     id: string;
-    mail: string;
+    email: string;
     userName: string;
-    role: number;
+    role: number; 
 }
 
 export interface UserTableType {
@@ -18,6 +16,5 @@ export interface UserTableType {
 
 export const ROLES: { [key: number]: string } = {
     1: 'Administrador',
-    2: 'Editor',
-    3: 'Visitante',
+    2: 'Usuario',
 };

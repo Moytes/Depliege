@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Layout, Drawer, Menu, Typography, Flex, Avatar } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { UserHeader } from '../../components/Header/user/UserHeader';
-import { UserFooter } from '../../components/Footer/user/UserFooter';
+import { UserHeader } from '../../layout/Header/user/UserHeader';
+import { UserFooter } from '../../layout/Footer/user/UserFooter';
 
 import {
     LineChartOutlined,

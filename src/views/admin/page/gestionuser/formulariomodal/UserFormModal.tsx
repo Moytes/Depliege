@@ -1,8 +1,6 @@
-// src/views/admin/page/gestionuser/components/UserFormModal.tsx
-
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, Button } from 'antd';
-import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons'; 
 import { UserTableType, ROLES } from '../../../../../types/admin/gestionuser/index';
 
 const { Option } = Select;

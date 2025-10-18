@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Layout, Drawer, Menu, Typography, Flex, Avatar } from 'antd';
 import { Outlet } from 'react-router-dom';
 
-import { AdminHeader } from '../../components/Header/admin/AdminHeader';
-import { AdminFooter } from '../../components/Footer/admin/AdminFooter';
+import { AdminHeader } from '../../layout/Header/admin/AdminHeader';
+import { AdminFooter } from '../../layout/Footer/admin/AdminFooter';
 
 import {
     DashboardOutlined,

@@ -1,7 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Menu, Button, Flex, Grid, Typography, Avatar } from 'antd';
-import {LineChartOutlined,ExperimentOutlined,SettingOutlined,LogoutOutlined,MenuOutlined} from '@ant-design/icons';
+import {
+    LineChartOutlined,
+    ExperimentOutlined,
+    SettingOutlined,
+    LogoutOutlined,
+    MenuOutlined,
+    AppstoreOutlined // Icono para la nueva vista
+} from '@ant-design/icons';
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -10,9 +17,10 @@ interface UserHeaderProps {
     onMenuClick: () => void;
 }
 
-
+// Se agrega el nuevo item para la gestión del invernadero
 const menuItems = [
     { key: '/user/monitoring', icon: <LineChartOutlined />, label: 'Monitoreo' },
+    { key: '/user/gestion-invernadero', icon: <AppstoreOutlined />, label: 'Gestión Invernadero' },
     { key: '/user/history', icon: <ExperimentOutlined />, label: 'Historial' },
     { key: '/user/settings', icon: <SettingOutlined />, label: 'Configuración' },
     { key: '/login', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
@@ -21,7 +29,6 @@ const menuItems = [
 export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
     const screens = useBreakpoint();
     const navigate = useNavigate();
-
 
     const headerStyle: React.CSSProperties = {
         backgroundColor: '#003366',
@@ -40,7 +47,6 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
         margin: 0,
     };
 
-
     const handleMenuClick = ({ key }: { key: string }) => {
         navigate(key);
     };
@@ -51,7 +57,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
                 <Flex align="center" gap="middle">
                     <Avatar
                         size={40}
-                        src="/uteq-logo2.png"   
+                        src="/uteq-logo2.png"
                         style={{ backgroundColor: 'white', padding: '4px' }}
                     />
                     <Typography.Title level={4} style={titleStyle}>

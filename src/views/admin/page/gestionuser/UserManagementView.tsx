@@ -1,12 +1,10 @@
-// src/views/admin/page/gestionuser/UserManagementView.tsx
-
 import React from 'react';
 import { Table, Button, Input, Space, Popconfirm, Typography, Card, Flex, Grid } from 'antd';
 import type { TableProps } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useUserManagement } from './hooks/useUserManagement';
 import { UserFormModal } from './formulariomodal/UserFormModal';
-import { ROLES, UserTableType } from '../../../../types/admin/gestionuser/index';
+import { UserTableType, ROLES } from '../../../../types/admin/gestionuser/index';
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -28,10 +26,10 @@ export const UserManagementView: React.FC = () => {
     } = useUserManagement();
 
     const columns: TableProps<UserTableType>['columns'] = [
-        { title: 'Nombre', dataIndex: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
-        { title: 'Correo Electrónico', dataIndex: 'email', responsive: ['sm'] },
+        { title: 'Nombre', dataIndex: 'name', key: 'name', sorter: (a, b) => a.name.localeCompare(b.name) },
+        { title: 'Correo Electrónico', dataIndex: 'email', key: 'email', responsive: ['sm'] },
         {
-            title: 'Rol', dataIndex: 'role', responsive: ['md'],
+            title: 'Rol', dataIndex: 'role', key: 'role', responsive: ['md'],
             filters: Object.values(ROLES).map(role => ({ text: role, value: role })),
             onFilter: (value, record) => record.role.indexOf(value as string) === 0,
         },

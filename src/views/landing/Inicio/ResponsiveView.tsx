@@ -4,8 +4,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import { LoginView } from '../../auth/login/LoginView';
 import { RegisterView } from '../../auth/register/RegisterView';
-import { AppHeader } from '../../../components/Header/landing/inicio/AppHeader';
-import { AppFooter } from '../../../components/Footer/landing/inico/AppFooter';
+import { AppHeader } from '../../../layout/Header/landing/inico/AppHeader';
+import { AppFooter } from '../../../layout/Footer/landing/inicio/AppFooter';
 
 const { Content } = Layout;
 
