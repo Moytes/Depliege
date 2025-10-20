@@ -19,10 +19,7 @@ interface UserHeaderProps {
 
 // Se agrega el nuevo item para la gestión del invernadero
 const menuItems = [
-    { key: '/user/monitoring', icon: <LineChartOutlined />, label: 'Monitoreo' },
     { key: '/user/gestion-invernadero', icon: <AppstoreOutlined />, label: 'Gestión Invernadero' },
-    { key: '/user/history', icon: <ExperimentOutlined />, label: 'Historial' },
-    { key: '/user/settings', icon: <SettingOutlined />, label: 'Configuración' },
     { key: '/login', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
 ];
 
