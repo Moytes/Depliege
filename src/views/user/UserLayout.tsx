@@ -16,9 +16,7 @@ import {
 const { Content } = Layout;
 
 const menuItems = [
-    { key: '/user/monitoring', icon: <LineChartOutlined />, label: 'Monitoreo' },
-    { key: '/user/history', icon: <ExperimentOutlined />, label: 'Historial' },
-    { key: '/user/settings', icon: <SettingOutlined />, label: 'Configuración' },
+    { key: '/user/gestion-invernadero', icon: <LineChartOutlined />, label: 'Gestión de Invernaderos' },
     { key: '/login', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
 ];
 

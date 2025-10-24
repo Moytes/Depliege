@@ -7,7 +7,8 @@ import {
     SettingOutlined,
     LogoutOutlined,
     MenuOutlined,
-    AppstoreOutlined // Icono para la nueva vista
+    AppstoreOutlined,
+    UserOutlined // Importamos el ícono de perfil
 } from '@ant-design/icons';
 
 const { Header } = Layout;
@@ -17,8 +18,9 @@ interface UserHeaderProps {
     onMenuClick: () => void;
 }
 
-// Se agrega el nuevo item para la gestión del invernadero
+// Se agrega el nuevo item para el perfil y se reordenan
 const menuItems = [
+    { key: '/user/profile', icon: <UserOutlined />, label: 'Mi Perfil' },
     { key: '/user/gestion-invernadero', icon: <AppstoreOutlined />, label: 'Gestión Invernadero' },
     { key: '/login', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
 ];
@@ -73,6 +75,8 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
                             minWidth: '350px',
                             backgroundColor: 'transparent',
                         }}
+                        // Opcional: seleccionar la tecla activa basada en la ruta
+                        selectedKeys={[window.location.pathname]}
                     />
                 ) : (
                     <Button
