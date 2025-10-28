@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Typography, ConfigProvider, Row, Col, Grid, Flex, Card, App } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -46,11 +46,41 @@ const cardStyle: React.CSSProperties = { width: '100%', maxWidth: '1100px', boxS
 const formColumnStyle: React.CSSProperties = { height: '100%', padding: '40px 32px' };
 const formWrapperStyle: React.CSSProperties = { width: '100%', maxWidth: '400px' };
 
+
 export const LoginView: React.FC = () => {
     const { message } = App.useApp();
     const navigate = useNavigate();
     const screens = useBreakpoint();
     const [loading, setLoading] = useState(false);
+    const [loginAttempts, setLoginAttempts] = useState(0);
+    const [isBlocked, setIsBlocked] = useState(false);
+    const [timeLeft, setTimeLeft] = useState<string | null>(null);
+    const [blockEndTime, setBlockEndTime] = useState<number | null>(null);
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+
+        if (isBlocked && blockEndTime) {
+            interval = setInterval(() => {
+                const now = Date.now();
+                const remaining = blockEndTime - now;
+
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    setIsBlocked(false);
+                    setLoginAttempts(0);
+                    setTimeLeft(null);
+                    setBlockEndTime(null);
+                } else {
+                    const minutes = Math.floor((remaining / 1000) / 60);
+                    const seconds = Math.floor((remaining / 1000) % 60);
+                    setTimeLeft(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+                }
+            }, 1000);
+        }
+
+        return () => clearInterval(interval); 
+    }, [isBlocked, blockEndTime]);
+
 
     const handleFormSubmit = async (values: any) => {
         setLoading(true);
@@ -65,6 +95,8 @@ export const LoginView: React.FC = () => {
             const response = await loginUser(userData);
             saveToken(response.jwttoken);
             const userRole = response.role;
+
+            setLoginAttempts(0);
 
             if (userRole) {
                 message.success('¡Inicio de sesión exitoso!');
@@ -83,11 +115,22 @@ export const LoginView: React.FC = () => {
 
         } catch (error) {
             console.error("Fallo en el inicio de sesión:", error);
-            let errorMessage = 'Usuario o contraseña incorrectos.';
-            if (axios.isAxiosError(error) && error.response?.data?.errorMessage) {
-                errorMessage = error.response.data.errorMessage;
+            const newAttemptCount = loginAttempts + 1;
+            setLoginAttempts(newAttemptCount);
+
+            if (newAttemptCount >= 4) {
+                const endTime = Date.now() + 2 * 60 * 1000; 
+                setBlockEndTime(endTime);
+                setIsBlocked(true);
+                message.error('Demasiados intentos fallidos. El formulario se ha bloqueado por 2 minutos.');
+            } else {
+                let errorMessage = `Usuario o contraseña incorrectos. Intento ${newAttemptCount} de 4.`;
+                if (axios.isAxiosError(error) && error.response?.data?.errorMessage) {
+                    errorMessage = `${error.response.data.errorMessage} (Intento ${newAttemptCount} de 4).`;
+                }
+                message.error(errorMessage);
             }
-            message.error(errorMessage);
+
         } finally {
             setLoading(false);
         }
@@ -126,13 +169,18 @@ export const LoginView: React.FC = () => {
                                     </Flex>
                                     <Form name="login" onFinish={handleFormSubmit} autoComplete="off" layout="vertical">
                                         <Form.Item name="email" rules={[{ required: true, message: 'Por favor, ingresa tu correo' }, { type: 'email', message: 'El correo no es válido' }]}>
-                                            <Input prefix={<UserOutlined />} placeholder="Correo Electrónico" size="large" />
+                                            <Input prefix={<UserOutlined />} placeholder="Correo Electrónico" size="large" disabled={isBlocked} />
                                         </Form.Item>
                                         <Form.Item name="password" rules={[{ required: true, message: 'Por favor, ingresa tu contraseña' }]}>
-                                            <Input.Password prefix={<LockOutlined />} placeholder="Contraseña" size="large" />
+                                            <Input.Password prefix={<LockOutlined />} placeholder="Contraseña" size="large" disabled={isBlocked} />
                                         </Form.Item>
+                                        {isBlocked && timeLeft && (
+                                            <Typography.Text type="danger" style={{ textAlign: 'center', display: 'block', marginBottom: '12px' }}>
+                                                Intente de nuevo en {timeLeft}
+                                            </Typography.Text>
+                                        )}
                                         <Form.Item>
-                                            <Button type="primary" htmlType="submit" block size="large" loading={loading}>
+                                            <Button type="primary" htmlType="submit" block size="large" loading={loading} disabled={isBlocked || loading}>
                                                 Entrar
                                             </Button>
                                         </Form.Item>
