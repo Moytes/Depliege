@@ -109,13 +109,9 @@ export const UserProfileView: React.FC = () => {
           userName: response.data.userName,
           mail: response.data.mail,
         });
-      } catch (error: any) {
-        let msg = 'Error al cargar el perfil.';
-        if (axios.isAxiosError(error) && error.response?.data?.errorMessage) {
-            msg = error.response.data.errorMessage;
-        }
-        message.error(msg);
-      } finally {
+      }  catch (error: any) { let msg = 'Error al cargar el perfil.';
+        if (axios.isAxiosError(error) && error.response?.data?.errorMessage) { msg = error.response.data.errorMessage;
+        }message.error(msg); 
         setIsLoading(false);
       }
     };

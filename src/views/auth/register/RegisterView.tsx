@@ -1,55 +1,18 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Card, Typography, Flex, Grid, message } from 'antd';
+import React from 'react';
+import { Form, Input, Button, Card, Typography, Flex, Grid, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { SHA256 } from 'crypto-js';
-import { registerUser } from '../../../services/auth/registro/authService';
-import { RegisterUserData } from '../../../types/auth/registro/auth';
-import axios from 'axios';
+import { useRegisterForm } from '../../../hook/auth/register/useRegisterForm'; 
 
 const { useBreakpoint } = Grid;
-const { Title, Text } = Typography;
+const { Title, Text, Link } = Typography;
 
 interface RegisterViewProps {
     onBackToLogin: () => void;
 }
 
 export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => {
-    const [form] = Form.useForm();
     const screens = useBreakpoint();
-    const [loading, setLoading] = useState(false);
-
-    const onFinish = async (values: any) => {
-        setLoading(true);
-        try {
-            const trimmedName = values.name.trim();
-            const trimmedEmail = values.email.trim();
-            const hashedPassword = SHA256(values.password).toString();
-
-            const userData: RegisterUserData = {
-                UserName: trimmedName,
-                Mail: trimmedEmail,
-                Password: hashedPassword,
-            };
-
-            const response = await registerUser(userData);
-            message.success(response.message || '¡Usuario registrado con éxito!');
-            form.resetFields();
-            onBackToLogin();
-        } catch (error: any) {
-            console.error('Objeto de error completo:', error);
-            let errorMessage = 'No se pudo completar el registro.';
-            if (axios.isAxiosError(error) && error.response) {
-                const validationErrors = error.response.data.errors;
-                if (validationErrors) {
-                    const errorKey = Object.keys(validationErrors)[0];
-                    errorMessage = validationErrors[errorKey][0];
-                }
-            }
-            message.error(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { form, loading, onFinish } = useRegisterForm({ onBackToLogin });
 
     return (
         <div
@@ -73,15 +36,17 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                     border: '1px solid #dee2e6', 
                     boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)', 
                 }}
-                headStyle={{
-                    borderBottom: '1px solid #dee2e6', 
-                    textAlign: 'center',
-                    paddingBottom: '16px',
-                    background: 'transparent',
-                }}
-                bodyStyle={{
-                    padding: screens.xs ? '16px' : '24px',
-                    background: 'transparent',
+                styles={{
+                    header: {
+                        borderBottom: '1px solid #dee2e6', 
+                        textAlign: 'center',
+                        paddingBottom: '16px',
+                        background: 'transparent',
+                    },
+                    body: {
+                        padding: screens.xs ? '16px' : '24px',
+                        background: 'transparent',
+                    }
                 }}
                 title={
                     <Title
@@ -97,7 +62,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                 }
             >
                 <Form
-                    form={form}
+                    form={form} 
                     name="register"
                     onFinish={onFinish}
                     layout="vertical"
@@ -173,6 +138,9 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                         label={<Text strong style={{ color: '#495057' }}>Contraseña</Text>}
                         rules={[
                             { required: true, message: 'Por favor, ingresa tu contraseña' },
+                            { min: 12, message: 'La contraseña debe tener al menos 12 caracteres' },
+                            { pattern: /(?=.*[A-Z])/, message: 'Debe contener al menos una mayúscula' },
+                            { pattern: /(?=.*[!@#$%^&*])/, message: 'Debe contener al menos un carácter especial (!@#$%^&*)' },
                             { pattern: /^\S*$/, message: 'La contraseña no puede contener espacios' },
                         ]}
                         hasFeedback
@@ -206,6 +174,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                         hasFeedback
                         rules={[
                             { required: true, message: 'Por favor, confirma tu contraseña' },
+                            { min: 12, message: 'La contraseña debe tener al menos 12 caracteres' },
                             { pattern: /^\S*$/, message: 'La contraseña no puede contener espacios' },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
@@ -239,13 +208,30 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                         />
                     </Form.Item>
 
-                    <Form.Item style={{ marginTop: '24px', marginBottom: '16px' }}>
+                    <Form.Item
+                        name="agreement"
+                        valuePropName="checked"
+                        rules={[
+                            {
+                                validator: (_, value) =>
+                                    value
+                                        ? Promise.resolve()
+                                        : Promise.reject(new Error('Debes aceptar los términos y condiciones')),
+                            },
+                        ]}
+                    >
+                        <Checkbox>
+                            He leído y acepto los <Link href="/terms" target="_blank">Términos y Condiciones</Link>
+                        </Checkbox>
+                    </Form.Item>
+
+                    <Form.Item style={{ marginTop: '12px', marginBottom: '16px' }}>
                         <Button
                             type="primary"
                             htmlType="submit"
                             block
                             size="large"
-                            loading={loading}
+                            loading={loading} 
                             style={{
                                 borderRadius: '12px',
                                 padding: '10px',
