@@ -1,22 +1,47 @@
-import React from 'react';
-import { Layout, Flex, Button, Typography, Grid, Image } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons';
-import { useLocation } from 'react-router-dom'; // <-- 1. Importar el hook
+import React, { useState } from 'react';
+import { Layout, Flex, Button, Typography, Grid, Image } from 'antd'; 
+import { MenuOutlined } from '@ant-design/icons'; 
+import { useLocation } from 'react-router-dom';
+import { MobileMenu } from '../mobile/MobileMenu'; 
+import { DesktopMenu } from '../Desktop/DesktopMenu'; 
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
 
 interface AppHeaderProps {
-    // 2. Hacemos la prop opcional, ya que no siempre será necesaria
-    onRegisterClick?: () => void; 
+    onRegisterClick?: () => void;
+    onAboutClick?: () => void;
+    onLoginClick?: () => void;
+    onLogoClick?: () => void;
+    onHomeClick?: () => void;
 }
 
-export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
+export const AppHeader: React.FC<AppHeaderProps> = ({ 
+    onRegisterClick,
+    onAboutClick,
+    onLoginClick,
+    onLogoClick,
+    onHomeClick 
+}) => {
     const screens = useBreakpoint();
-    const location = useLocation(); // <-- 3. Obtener la información de la ruta actual
+    const location = useLocation();
 
-    // 4. Definimos la condición: mostrar el botón si la ruta NO es '/registro'
-    const showRegisterButton = location.pathname !== '/registro';
+    const [drawerVisible, setDrawerVisible] = useState(false);
+
+    const isMobile = !screens.md;
+
+    const showDrawer = () => {
+        setDrawerVisible(true);
+    };
+
+    const closeDrawer = () => {
+        setDrawerVisible(false);
+    };
+
+    const isLoginPage = location.pathname === '/login';
+    const isRegisterPage = location.pathname === '/register';
+    const isAboutPage = location.pathname === '/about-us';
+    const isHomePage = location.pathname === '/' || location.pathname === '/invernaderos';
 
     const headerStyle: React.CSSProperties = {
         position: 'sticky',
@@ -29,7 +54,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
         height: screens.lg ? 72 : 64,
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         zIndex: 10,
-        borderRadius: '0 0 15px 15px',
+        justifyContent: 'space-between',
     };
 
     const titleStyle: React.CSSProperties = {
@@ -39,12 +64,41 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
         fontSize: screens.sm ? (screens.lg ? '22px' : '18px') : '16px',
     };
 
-    const buttonSize = screens.sm ? (screens.lg ? 'large' : 'middle') : 'small';
+    const menuButtonStyle: React.CSSProperties = {
+        color: '#f0f0f0',
+        fontWeight: 500
+    };
+
+    const buttonSize = screens.lg ? 'large' : 'middle';
+
+
+    const handleHomeClick = () => {
+        if (onHomeClick) onHomeClick();
+        closeDrawer();
+    };
+    const handleAboutClick = () => {
+        if (onAboutClick) onAboutClick();
+        closeDrawer();
+    };
+    const handleLoginClick = () => {
+        if (onLoginClick) onLoginClick();
+        closeDrawer();
+    };
+    const handleRegisterClick = () => {
+        if (onRegisterClick) onRegisterClick();
+        closeDrawer();
+    };
 
     return (
         <Header style={headerStyle}>
             <Flex justify="space-between" align="center" style={{ width: '100%' }}>
-                <Flex align="center" gap="middle">
+                
+                <Flex 
+                    align="center" 
+                    gap={screens.sm ? "middle" : "small"}
+                    onClick={onLogoClick}
+                    style={{ cursor: 'pointer' }}
+                >
                     <Image
                         src="/logo.png"
                         alt="Logo UTEQ"
@@ -59,17 +113,40 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onRegisterClick }) => {
                     </Typography.Title>
                 </Flex>
                 
-                {/* 5. Renderizado condicional del botón */}
-                {showRegisterButton && (
-                    <Button 
-                        size={buttonSize} 
-                        type="primary" 
-                        icon={<UserAddOutlined />} 
-                        onClick={onRegisterClick}
-                    >
-                        Registrar
-                    </Button>
+                {isMobile ? (
+                    <Button
+                        type="text"
+                        icon={<MenuOutlined style={{ color: 'white', fontSize: '20px' }} />}
+                        onClick={showDrawer}
+                    />
+                ) : (
+                    <DesktopMenu
+                        onRegisterClick={onRegisterClick} 
+                        onAboutClick={onAboutClick}
+                        onLoginClick={onLoginClick}
+                        onHomeClick={onHomeClick}
+                        isHomePage={isHomePage}
+                        isAboutPage={isAboutPage}
+                        isLoginPage={isLoginPage}
+                        isRegisterPage={isRegisterPage}
+                        buttonSize={buttonSize}
+                        menuButtonStyle={menuButtonStyle}
+                    />
                 )}
+
+                <MobileMenu
+                    visible={drawerVisible}
+                    onClose={closeDrawer}
+                    onHomeClick={handleHomeClick} 
+                    onAboutClick={handleAboutClick}
+                    onLoginClick={handleLoginClick}
+                    onRegisterClick={handleRegisterClick}
+                    isHomePage={isHomePage}
+                    isAboutPage={isAboutPage}
+                    isLoginPage={isLoginPage}
+                    isRegisterPage={isRegisterPage}
+                />
+
             </Flex>
         </Header>
     );

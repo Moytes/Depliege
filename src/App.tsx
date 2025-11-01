@@ -54,7 +54,6 @@ function App() {
                         <Route path="gestion-invernadero/frio" element={<GestionInvernaderoFrioView />} />
                         <Route path="gestion-invernadero/calido" element={<GestionInvernaderoCalidoView />} />
                     </Route>
-
                     <Route path="/*" element={<ResponsiveView />} />
                 </Routes>
             </BrowserRouter>
