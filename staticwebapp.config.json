@@ -1,0 +1,9 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "methods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+      "rewrite": "https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/*"
+    }
+  ]
+}

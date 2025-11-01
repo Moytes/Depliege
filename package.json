@@ -30,7 +30,7 @@
   "proxy": "https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
