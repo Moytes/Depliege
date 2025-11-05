@@ -19,6 +19,8 @@ import { GestionInvernaderoCalidoView } from './views/user/gestionInvernadero/cl
 import { UserProfileView } from './views/user/profile/UserProfileView';
 import { ProtectedRoute } from './types/routes/ProtectedRoute';
 
+import { TermsView } from './views/auth/terminos/TermsView';
+
 function App() {
     return (
         <AntApp>
@@ -53,7 +55,9 @@ function App() {
                         <Route path="gestion-invernadero" element={<GestionInvernaderoView />} />
                         <Route path="gestion-invernadero/frio" element={<GestionInvernaderoFrioView />} />
                         <Route path="gestion-invernadero/calido" element={<GestionInvernaderoCalidoView />} />
-                    </Route>
+                    </Route>        
+                    <Route path="/terminos" element={<TermsView />} />
+                    
                     <Route path="/*" element={<ResponsiveView />} />
                 </Routes>
             </BrowserRouter>
@@ -62,4 +66,3 @@ function App() {
 }
 
 export default App;
-

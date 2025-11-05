@@ -45,7 +45,7 @@ export const StatsSection = () => {
 
   const styles = {
     section: {
-      padding: screens.md ? '80px 40px' : '40px 20px', // Padding responsivo
+      padding: screens.md ? '80px 40px' : '40px 20px', 
       background: `linear-gradient(180deg, ${theme.primaryDark} 0%, ${theme.primary} 100%)`,
       position: 'relative',
       overflow: 'hidden',
@@ -119,7 +119,7 @@ export const StatsSection = () => {
     <section ref={ref} style={styles.section}>
       <div style={styles.backgroundGlow}></div>
 
-      <div style={styles.contentWrapper}>
+      <div style={styles.contentWrapper}>1
         <Row justify="center">
           <Col xs={24} lg={18}>
             <div style={styles.titleWrapper}>

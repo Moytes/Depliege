@@ -2,11 +2,10 @@ import React from 'react';
 import { Form, Input, Button, Card, Typography, Flex, Grid, Checkbox, ConfigProvider } from 'antd';
 import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useRegisterForm } from '../../../hook/auth/register/useRegisterForm'; 
-
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
 
 const { useBreakpoint } = Grid;
-const { Title, Text, Link } = Typography;
+const { Title, Text, Link } = Typography; 
 
 interface RegisterViewProps {
     onBackToLogin: () => void;
@@ -29,10 +28,9 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
             theme={{ 
                 token: { 
                     colorPrimary: theme.secondary, 
-                    colorLink: theme.accent,      
+                    colorLink: theme.accent,       
                     colorText: theme.textLight,    
                     colorTextPlaceholder: theme.textLight 
-
                 } 
             }}
         >
@@ -170,6 +168,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                             />
                         </Form.Item>
 
+
                         <Form.Item
                             name="agreement"
                             valuePropName="checked"
@@ -183,7 +182,10 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                             ]}
                         >
                             <Checkbox>
-                                He leído y acepto los <Link href="#" target="_blank">Términos y Condiciones</Link>
+                                He leído y acepto los 
+                                <Link href="/terminos" target="_blank" rel="noopener noreferrer">
+                                    Términos y Condiciones
+                                </Link>
                             </Checkbox>
                         </Form.Item>
 
