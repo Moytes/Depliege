@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react'; // Importar useMemo
 import { Card, Typography, Radio } from 'antd';
-
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceArea } from 'recharts';
 
 const { Title } = Typography;
 
 interface SensorChartProps {
     title: string;
-    data: any[];
+    data: any[]; 
     tempDataKey: string;
     humidityDataKey: string;
     optimalTempMin: number;
@@ -34,9 +33,35 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return null;
 };
 
+
 export const SensorChart: React.FC<SensorChartProps> = ({ title, data, tempDataKey, humidityDataKey, optimalTempMin, optimalTempMax }) => {
     const [range, setRange] = useState('24h');
     const axisAndLegendTextColor = '#a0a0a0'; 
+
+    const filteredData = useMemo(() => {
+        if (!data) return [];
+
+        const now = new Date().getTime();
+        let cutoffTime: number;
+
+        switch(range) {
+            case '7d':
+                cutoffTime = now - 7 * 24 * 60 * 60 * 1000;
+                break;
+            case '30d':
+                cutoffTime = now - 30 * 24 * 60 * 60 * 1000;
+                break;
+            case '24h':
+            default:
+                cutoffTime = now - 24 * 60 * 60 * 1000;
+                break;
+        }
+
+        return data.filter((d: any) => {
+            const itemTime = new Date(d.timestamp).getTime();
+            return itemTime >= cutoffTime;
+        });
+    }, [data, range]); 
 
     return (
         <Card 
@@ -57,7 +82,7 @@ export const SensorChart: React.FC<SensorChartProps> = ({ title, data, tempDataK
         >
             <div style={{ width: '100%', height: 350 }}>
                 <ResponsiveContainer>
-                    <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <AreaChart data={filteredData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
                             <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#ff4d4f" stopOpacity={0.7}/>
