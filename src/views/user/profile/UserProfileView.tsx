@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Card,Form,Input,Button,Row,Col,Typography,message,Spin,Avatar,Flex,Divider} from 'antd';
 import {UserOutlined,MailOutlined,LockOutlined,SaveOutlined,LoadingOutlined,EditOutlined} from '@ant-design/icons';
 import axios from 'axios';
+import { SHA256 } from 'crypto-js';
 
 const { Title, Text } = Typography;
 
@@ -53,6 +54,7 @@ interface UserDataDTO {
 interface UpdateProfileRequest {
   userName: string;
   mail: string;
+  currentPassword?: string;
   newPassword?: string;
   confirmPassword?: string;
 }
@@ -102,7 +104,7 @@ export const UserProfileView: React.FC = () => {
     setIsUpdating(true);
 
     const hasProfileDataChanged = values.userName !== userData?.userName || values.mail !== userData?.mail;
-    const isPasswordChangeAttempt = !!(values.newPassword && values.confirmPassword);
+    const isPasswordChangeAttempt = !!(values.currentPassword && values.newPassword && values.confirmPassword);
 
     if (!hasProfileDataChanged && !isPasswordChangeAttempt) {
       message.info('No se detectaron cambios para actualizar.');
@@ -115,14 +117,10 @@ export const UserProfileView: React.FC = () => {
       let passwordSuccess = false;
 
       if (hasProfileDataChanged) {
-        const profilePayload: { UserName?: string, Mail?: string } = {};
-        
-        if (values.userName !== userData?.userName) {
-          profilePayload.UserName = values.userName;
-        }
-        if (values.mail !== userData?.mail) {
-          profilePayload.Mail = values.mail;
-        }
+        const profilePayload = { 
+          UserName: values.userName, 
+          Mail: values.mail 
+        };
 
         console.log("Enviando datos de perfil:", profilePayload);
         
@@ -141,10 +139,15 @@ export const UserProfileView: React.FC = () => {
       }
 
       if (isPasswordChangeAttempt) {
+        const currentHashed = SHA256(values.currentPassword!).toString();
+        const newHashed = SHA256(values.newPassword!).toString();
+        const confirmHashed = SHA256(values.confirmPassword!).toString();
+
         const passwordPayload = {
-  NewPassword: values.newPassword,        // ✅ Mayúscula
-  ConfirmNewPassword: values.confirmPassword  // ✅ Mayúscula
-};
+          CurrentPassword: currentHashed,
+          NewPassword: newHashed,
+          ConfirmNewPassword: confirmHashed
+        };
 
         console.log("Enviando datos de contraseña:", passwordPayload);
         console.log("URL:", `${API_BASE_URL}/ChangePassword/${userId}`);
@@ -158,6 +161,7 @@ export const UserProfileView: React.FC = () => {
           });
 
           form.setFieldsValue({
+            currentPassword: '',
             newPassword: '',
             confirmPassword: ''
           });
@@ -293,7 +297,22 @@ export const UserProfileView: React.FC = () => {
             {showPasswordFields && (
               <div style={{ marginTop: '16px', padding: '16px', backgroundColor: '#fafafa', borderRadius: '8px' }}>
                 <Row gutter={[16, 0]}>
-                  <Col xs={24} md={12}>
+                  <Col xs={24} md={8}>
+                    <Form.Item 
+                      name="currentPassword" 
+                      label="Contraseña Actual"
+                      rules={[
+                        { required: showPasswordFields, message: 'Ingresa tu contraseña actual' },
+                      ]}
+                    >
+                      <Input.Password 
+                        prefix={<LockOutlined style={{ color: '#bfbfbf' }} />} 
+                        placeholder="Contraseña Actual"
+                        size="large"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={8}>
                     <Form.Item 
                       name="newPassword" 
                       label="Nueva Contraseña"
@@ -310,7 +329,7 @@ export const UserProfileView: React.FC = () => {
                     </Form.Item>
                   </Col>
                   
-                  <Col xs={24} md={12}>
+                  <Col xs={24} md={8}>
                     <Form.Item 
                       name="confirmPassword" 
                       label="Confirmar Contraseña"
