@@ -5,13 +5,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { UserHeader } from '../../layout/Header/user/UserHeader';
 import { UserFooter } from '../../layout/Footer/user/UserFooter';
 
-import {
-    LineChartOutlined,
-    ExperimentOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-    CloseOutlined
-} from '@ant-design/icons';
+import {LineChartOutlined,LogoutOutlined,CloseOutlined} from '@ant-design/icons';
 
 const { Content } = Layout;
 

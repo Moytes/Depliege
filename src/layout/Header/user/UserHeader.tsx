@@ -1,15 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout, Menu, Button, Flex, Grid, Typography, Avatar } from 'antd';
-import {
-    LineChartOutlined,
-    ExperimentOutlined,
-    SettingOutlined,
-    LogoutOutlined,
-    MenuOutlined,
-    AppstoreOutlined,
-    UserOutlined // Importamos el ícono de perfil
-} from '@ant-design/icons';
+import {LogoutOutlined,MenuOutlined,AppstoreOutlined,UserOutlined } from '@ant-design/icons';
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;

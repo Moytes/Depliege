@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Typography, Avatar, Row, Col, Grid, Image } from 'antd';
+import { Typography, Row, Col, Grid, Image } from 'antd';
 import { TeamOutlined, RocketOutlined, HeartOutlined } from '@ant-design/icons';
 
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme'; 

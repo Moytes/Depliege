@@ -6,13 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { AdminHeader } from '../../layout/Header/admin/AdminHeader';
 import { AdminFooter } from '../../layout/Footer/admin/AdminFooter';
 
-import {
-    DashboardOutlined,
-    AppstoreOutlined,
-    UserOutlined,
-    LogoutOutlined,
-    CloseOutlined
-} from '@ant-design/icons';
+import {AppstoreOutlined,UserOutlined,LogoutOutlined,CloseOutlined} from '@ant-design/icons';
 
 const { Content } = Layout;
 

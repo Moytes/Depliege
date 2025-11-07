@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Typography, Button, Row, Col, Grid, ConfigProvider } from 'antd';
+import { Card, Typography, Button, Grid, ConfigProvider } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom'; 
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
