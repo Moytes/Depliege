@@ -1,166 +1,83 @@
+// UserManagementView.tsx
 import React from 'react';
-import { Table, Button, Space, Popconfirm, Typography, Card, Flex, Grid, Tag, Tooltip } from 'antd';
+// Añadimos Tag a las importaciones
+import { Table, Card, Typography, Tag } from 'antd';
 import type { TableProps } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
-import { useUserManagement } from './hooks/useUserManagement';
-import { UserFormModal } from './formulariomodal/UserFormModal';
-import { UserTableType, ROLES, isAdmin } from '../../../../types/admin/gestionuser/index';
+// Importamos el hook simplificado y su tipo de datos
+import {
+  useUserManagement,
+  UserTableData,
+} from './hooks/useUserManagement';
 
 const { Title } = Typography;
 
 export const UserManagementView: React.FC = () => {
-    const screens = Grid.useBreakpoint();
-    const {
-        filteredUsers,
-        loading,
-        isModalVisible,
-        editingUser,
-        isSubmitting,
-        currentUser,
-        canCreateUsers,
-        canDeleteUsers,
-        canEditAllUsers,
-        handleDelete,
-        showAddModal,
-        showEditModal,
-        handleCancelModal,
-        handleFormFinish,
-    } = useUserManagement();
+  // El hook ahora solo devuelve 'users' y 'loading'
+  const { users, loading } = useUserManagement();
 
-    const columns: TableProps<UserTableType>['columns'] = [
-        { 
-            title: 'Nombre', 
-            dataIndex: 'name', 
-            key: 'name', 
-            sorter: (a, b) => a.name.localeCompare(b.name),
-            render: (name: string, record) => (
-                <Space>
-                    <span>{name}</span>
-                    {currentUser?.id === record.id && (
-                        <Tag icon={<UserOutlined />} color="green">Tú</Tag>
-                    )}
-                </Space>
-            )
-        },
-        { 
-            title: 'Correo Electrónico', 
-            dataIndex: 'email', 
-            key: 'email', 
-            responsive: ['sm'] 
-        },
-        {
-            title: 'Rol', 
-            dataIndex: 'role', 
-            key: 'role', 
-            responsive: ['md'],
-            render: (role: string, record) => (
-                <Tag color={record.roleId === 1 ? 'red' : 'blue'}>
-                    {role}
-                </Tag>
-            ),
-            filters: Object.values(ROLES).map(role => ({ text: role, value: role })),
-            onFilter: (value, record) => record.role.indexOf(value as string) === 0,
-        },
-        {
-            title: 'Acciones', 
-            key: 'actions', 
-            fixed: 'right', 
-            width: 150,
-            render: (_, record) => {
-                const isCurrentUser = currentUser?.id === record.id;
-                const canEdit = canEditAllUsers || isCurrentUser;
-                const canDelete = canDeleteUsers && !isCurrentUser; // REMOVIDO: && record.roleId !== 1
-                                                                    // Ahora permite eliminar admins si no es self
+  // Columnas simplificadas para coincidir con el requisito
+  const columns: TableProps<UserTableData>['columns'] = [
+    {
+      title: 'Nombre',
+      dataIndex: 'nombre', // Coincide con UserTableData
+      key: 'nombre',
+      sorter: (a, b) => a.nombre.localeCompare(b.nombre),
+    },
+    {
+      title: 'Correo Electrónico',
+      dataIndex: 'correo', // Coincide con UserTableData
+      key: 'correo',
+      responsive: ['sm'],
+    },
+    {
+      title: 'Rol',
+      dataIndex: 'rol', // Coincide con UserTableData
+      key: 'rol',
+      responsive: ['md'],
+      sorter: (a, b) => a.rol.localeCompare(b.rol),
+      // --- ✅ MEJORA DE DISEÑO ---
+      // Añadimos un render para mostrar Tags de colores
+      render: (rol: string) => {
+        // Asignamos un color basado en el texto del rol
+        const color = rol.toLowerCase().includes('admin') ? 'red' : 'blue';
+        return (
+          <Tag color={color} key={rol}>
+            {rol.toUpperCase()}
+          </Tag>
+        );
+      },
+      // --- Fin de la mejora ---
+    },
+  ];
 
-                return (
-                    <Space size="small">
-                        <Tooltip title={canEdit ? "Editar usuario" : "Sin permisos para editar"}>
-                            <Button 
-                                type="link" 
-                                icon={<EditOutlined />}
-                                onClick={() => showEditModal(record)}
-                                disabled={!canEdit}
-                            >
-                                Editar
-                            </Button>
-                        </Tooltip>
-                        
-                        {canDelete && (
-                            <Tooltip title="Eliminar usuario">
-                                <Popconfirm
-                                    title="¿Eliminar este usuario?"
-                                    description="Esta acción no se puede deshacer"
-                                    onConfirm={() => handleDelete(record.id)}
-                                    okText="Sí" 
-                                    cancelText="No"
-                                    okType="danger"
-                                >
-                                    <Button 
-                                        type="link" 
-                                        danger 
-                                        icon={<DeleteOutlined />}
-                                    >
-                                        Eliminar
-                                    </Button>
-                                </Popconfirm>
-                            </Tooltip>
-                        )}
-                    </Space>
-                );
-            },
-        },
-    ];
-
-    return (
-        <Card>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                <Flex justify="space-between" align="center">
-                    <Title level={2} style={{ margin: 0 }}>Gestión de Usuarios</Title>
-                    {currentUser && (
-                        <Tag color={isAdmin(currentUser.role) ? 'red' : 'blue'}>
-                            {ROLES[currentUser.role] || 'Usuario'}
-                        </Tag>
-                    )}
-                </Flex>
-                
-                <Flex vertical={!screens.md} justify="flex-end" align="center" wrap="wrap" gap="middle">
-                    {canCreateUsers && (
-                        <Button 
-                            type="primary" 
-                            icon={<PlusOutlined />} 
-                            onClick={showAddModal} 
-                            style={{ width: !screens.md ? '100%' : 'auto' }}
-                        >
-                            Agregar Usuario
-                        </Button>
-                    )}
-                </Flex>
-
-                <Table
-                    columns={columns}
-                    dataSource={filteredUsers}
-                    rowKey="key"
-                    loading={loading}
-                    scroll={{ x: 800 }}
-                    pagination={{
-                        pageSize: 10,
-                        showSizeChanger: true,
-                        showQuickJumper: true,
-                        showTotal: (total, range) => 
-                            `${range[0]}-${range[1]} de ${total} usuarios`,
-                    }}
-                />
-            </Space>
-
-            <UserFormModal
-                open={isModalVisible}
-                onCancel={handleCancelModal}
-                onFinish={handleFormFinish}
-                editingUser={editingUser}
-                isSubmitting={isSubmitting}
-                currentUserRole={currentUser?.role}
-                isAdminUser={canEditAllUsers}
-            />
-        </Card>
-    );
+  return (
+    // --- ✅ MEJORA DE DISEÑO ---
+    // Movemos el Título al 'title' prop de la Card para un diseño más limpio
+    <Card
+      title={
+        <Title level={2} style={{ margin: 0 }}>
+          Gestión de Usuarios
+        </Title>
+      }
+    >
+      {/* La tabla ahora es el único elemento interactivo */}
+      <Table
+        columns={columns}
+        dataSource={users}
+        rowKey="key"
+        loading={loading}
+        scroll={{ x: 600 }}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} de ${total} usuarios`,
+        }}
+        locale={{
+          emptyText: 'No hay usuarios registrados',
+        }}
+      />
+    </Card>
+    // --- Fin de la mejora ---
+  );
 };
