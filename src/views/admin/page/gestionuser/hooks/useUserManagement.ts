@@ -1,12 +1,8 @@
-// hooks/useUserManagement.ts
 import React from 'react';
 import { App } from 'antd';
 import { GetUsersDTO } from '../../../../../types/admin/gestionuser/index';
 import { userService } from '../../../../../services/admin/gestionuser/userService';
 
-/**
- * Tipo de datos que espera la tabla de AntDesign.
- */
 export interface UserTableData {
   key: string;
   nombre: string;
@@ -23,10 +19,6 @@ export const useUserManagement = () => {
     setLoading(true);
     try {
       const usersFromApi = await userService.getUsers();
-
-      // --- ✅ CORRECCIÓN ---
-      // Leemos las propiedades en camelCase (id, userName, mail, role)
-      // que nos envía el backend de ASP.NET.
       const mappedUsers: UserTableData[] = usersFromApi.map(
         (user: GetUsersDTO) => ({
           key: user.id,
@@ -35,7 +27,6 @@ export const useUserManagement = () => {
           rol: user.role,
         })
       );
-      // --- Fin de la corrección ---
 
       setUsers(mappedUsers);
     } catch (error: any) {
@@ -53,7 +44,6 @@ export const useUserManagement = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  // Retornamos solo lo que la tabla necesita
   return {
     users,
     loading,

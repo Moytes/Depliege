@@ -1,4 +1,3 @@
-// services/admin/gestionuser/userService.ts
 import axios from 'axios';
 import { GetUsersDTO } from '../../../types/admin/gestionuser/index';
 
@@ -8,9 +7,6 @@ const apiClient = axios.create({
   baseURL: API_URL,
 });
 
-// -------------------------------------------------
-// Interceptor: añadir JWT
-// -------------------------------------------------
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('authToken');
   if (token) {
@@ -19,9 +15,6 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// -------------------------------------------------
-// Interceptor: manejo global de errores (401 → logout)
-// -------------------------------------------------
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -33,11 +26,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-// -------------------------------------------------
-// Servicio de usuarios (simplificado a solo lectura)
-// -------------------------------------------------
 export const userService = {
-  /** Obtener todos los usuarios */
   getUsers: async (): Promise<GetUsersDTO[]> => {
     const { data } = await apiClient.get<GetUsersDTO[]>('/GetUsers');
     return data;

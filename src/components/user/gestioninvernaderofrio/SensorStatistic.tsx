@@ -15,13 +15,15 @@ interface SensorStatisticProps {
 
 const getDarkerShade = (hexColor: string) => {
     if (hexColor === '#ff4d4f') return '#d4380d'; 
-    if (hexColor === '#1890ff') return '#0050b3'; 
+    if (hexColor === '#1890ff') return '#0050b3';
+    if (hexColor === '#faad14') return '#ad6800'; 
     return hexColor;
 };
 
 export const SensorStatistic: React.FC<SensorStatisticProps> = ({ icon, title, value, unit, color, trend }) => {
     const isPositive = trend >= 0;
     const gradientEndColor = getDarkerShade(color);
+    const displayValue = value != null ? value.toFixed(1) : 'N/A'; // Chequeo para undefined/null
 
     return (
         <Card style={{
@@ -51,7 +53,9 @@ export const SensorStatistic: React.FC<SensorStatisticProps> = ({ icon, title, v
                 
                 <Col>
                     <Text style={{ color: 'rgba(255, 255, 255, 0.85)', fontWeight: 500 }}>{title}</Text>
-                    <Title level={2} style={{ margin: 0, color: 'white', letterSpacing: '-1px' }}>{value}{unit}</Title>
+                    <Title level={2} style={{ margin: 0, color: 'white', letterSpacing: '-1px' }}>
+                        {displayValue}{unit}
+                    </Title>
                     
                     <div style={{ display: 'flex', alignItems: 'center', marginTop: '4px' }}>
                         {isPositive ? 

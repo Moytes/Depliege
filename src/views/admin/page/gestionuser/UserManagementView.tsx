@@ -12,33 +12,28 @@ import {
 const { Title } = Typography;
 
 export const UserManagementView: React.FC = () => {
-  // El hook ahora solo devuelve 'users' y 'loading'
   const { users, loading } = useUserManagement();
 
-  // Columnas simplificadas para coincidir con el requisito
   const columns: TableProps<UserTableData>['columns'] = [
     {
       title: 'Nombre',
-      dataIndex: 'nombre', // Coincide con UserTableData
+      dataIndex: 'nombre', 
       key: 'nombre',
       sorter: (a, b) => a.nombre.localeCompare(b.nombre),
     },
     {
       title: 'Correo Electrónico',
-      dataIndex: 'correo', // Coincide con UserTableData
+      dataIndex: 'correo',
       key: 'correo',
       responsive: ['sm'],
     },
     {
       title: 'Rol',
-      dataIndex: 'rol', // Coincide con UserTableData
+      dataIndex: 'rol', 
       key: 'rol',
       responsive: ['md'],
       sorter: (a, b) => a.rol.localeCompare(b.rol),
-      // --- ✅ MEJORA DE DISEÑO ---
-      // Añadimos un render para mostrar Tags de colores
       render: (rol: string) => {
-        // Asignamos un color basado en el texto del rol
         const color = rol.toLowerCase().includes('admin') ? 'red' : 'blue';
         return (
           <Tag color={color} key={rol}>
@@ -46,13 +41,10 @@ export const UserManagementView: React.FC = () => {
           </Tag>
         );
       },
-      // --- Fin de la mejora ---
     },
   ];
 
   return (
-    // --- ✅ MEJORA DE DISEÑO ---
-    // Movemos el Título al 'title' prop de la Card para un diseño más limpio
     <Card
       title={
         <Title level={2} style={{ margin: 0 }}>
@@ -60,7 +52,6 @@ export const UserManagementView: React.FC = () => {
         </Title>
       }
     >
-      {/* La tabla ahora es el único elemento interactivo */}
       <Table
         columns={columns}
         dataSource={users}
@@ -78,6 +69,5 @@ export const UserManagementView: React.FC = () => {
         }}
       />
     </Card>
-    // --- Fin de la mejora ---
   );
 };
