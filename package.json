@@ -28,7 +28,6 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io",
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LoginUserData, LoginResponse, DecodedToken } from '../../../types/auth/login/auth';
 
-const API_URL = '/api/User/Login';
+const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User/Login';
 
 export const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
   const response = await axios.post<LoginResponse>(API_URL, userData);

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { GetUsersDTO } from '../../../types/admin/gestionuser/index';
 
-const API_URL = '/api/User';
+const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User';
 
 const apiClient = axios.create({
   baseURL: API_URL,

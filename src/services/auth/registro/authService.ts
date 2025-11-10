@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { RegisterUserData } from '../../../types/auth/registro/auth';
 
-const API_URL = '/api/User';
+const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User';
 
 export const registerUser = async (userData: RegisterUserData) => {
     try {
