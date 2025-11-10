@@ -1,18 +1,36 @@
 import axios from 'axios';
 import { LoginUserData, LoginResponse, DecodedToken } from '../../../types/auth/login/auth';
 
-const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User/Login';
+// Usar variable de entorno con valor por defecto
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io';
+const API_URL = `${API_BASE_URL}/api/User/Login`;
+
+// Configurar axios con timeout
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '10000'),
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
 
 export const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse>(API_URL, userData);
-  return response.data;
+  console.log('🔍 Intentando login en:', API_URL);
+  console.log('📤 Datos enviados:', { ...userData, password: '***' }); // No loguear password real
+  
+  try {
+    const response = await apiClient.post<LoginResponse>('/api/User/Login', userData);
+    console.log('✅ Login exitoso');
+    return response.data;
+  } catch (error) {
+    console.error('❌ Error en login:', error);
+    throw error;
+  }
 };
-
 
 export const saveToken = (token: string): void => {
   localStorage.setItem('authToken', token);
 };
-
 
 export const logoutUser = (): void => {
   localStorage.removeItem('authToken');
