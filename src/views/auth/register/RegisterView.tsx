@@ -1,37 +1,44 @@
+// 📍 Archivo: src/views/auth/register/RegisterView.tsx
+
 import React from 'react';
 import { Form, Input, Button, Card, Typography, Flex, Grid, Checkbox, ConfigProvider } from 'antd';
 import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-import { useRegisterForm } from '../../../hook/auth/register/useRegisterForm'; 
+// --- 1. IMPORTA EL HOOK DESDE SU ARCHIVO CORRECTO ---
+import { useRegisterForm } from '../../../hook/auth/register/RegisterUserData';
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
 
 const { useBreakpoint } = Grid;
-const { Title, Text, Link } = Typography; 
+const { Title, Text, Link } = Typography;
 
 interface RegisterViewProps {
     onBackToLogin: () => void;
 }
 
+// --- 2. EXPORTA EL COMPONENTE 'RegisterView' ---
 export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => {
     const screens = useBreakpoint();
-    const { form, loading, onFinish } = useRegisterForm({ onBackToLogin });
+    
+    // --- 3. LLAMA AL HOOK SIN PARÁMETROS ---
+    // El hook ya no necesita 'onBackToLogin' porque usa 'navigate'
+    const { form, loading, onFinish } = useRegisterForm();
 
     const inputStyle: React.CSSProperties = {
         borderRadius: '8px',
         padding: '12px',
         background: theme.primaryDark,
         border: `1px solid ${hexToRgba(theme.textMuted, 0.3)}`,
-        color: theme.text, 
+        color: theme.text,
     };
 
     return (
-        <ConfigProvider 
-            theme={{ 
-                token: { 
-                    colorPrimary: theme.secondary, 
-                    colorLink: theme.accent,       
-                    colorText: theme.textLight,    
-                    colorTextPlaceholder: theme.textLight 
-                } 
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: theme.secondary,
+                    colorLink: theme.accent,
+                    colorText: theme.textLight,
+                    colorTextPlaceholder: theme.textLight
+                }
             }}
         >
             <div
@@ -40,7 +47,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                     justifyContent: 'center',
                     alignItems: 'center',
                     minHeight: '100vh',
-                    background: theme.primaryDark, 
+                    background: theme.primaryDark,
                     padding: '16px',
                 }}
             >
@@ -49,7 +56,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                         width: screens.xs ? '100%' : 450,
                         maxWidth: '95vw',
                         borderRadius: '16px',
-                        background: theme.primary, 
+                        background: theme.primary,
                         padding: screens.xs ? '16px' : '24px',
                         border: `1px solid ${hexToRgba(theme.textLight, 0.1)}`,
                         boxShadow: `0 8px 25px ${hexToRgba(theme.primaryDark, 0.5)}`,
@@ -71,7 +78,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                             level={3}
                             style={{
                                 margin: 0,
-                                color: theme.text, 
+                                color: theme.text,
                                 fontWeight: 600,
                             }}
                         >
@@ -80,7 +87,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                     }
                 >
                     <Form
-                        form={form} 
+                        form={form}
                         name="register"
                         onFinish={onFinish}
                         layout="vertical"
@@ -100,7 +107,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                                 prefix={<UserOutlined style={{ color: theme.textMuted }} />}
                                 placeholder="Ej: Juan Pérez"
                                 size="large"
-                                style={inputStyle} 
+                                style={inputStyle}
                             />
                         </Form.Item>
 
@@ -168,7 +175,6 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                             />
                         </Form.Item>
 
-
                         <Form.Item
                             name="agreement"
                             valuePropName="checked"
@@ -182,7 +188,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                             ]}
                         >
                             <Checkbox>
-                                He leído y acepto los 
+                                He leído y acepto los
                                 <Link href="/terminos" target="_blank" rel="noopener noreferrer">
                                     Términos y Condiciones
                                 </Link>
@@ -195,7 +201,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                                 htmlType="submit"
                                 block
                                 size="large"
-                                loading={loading} 
+                                loading={loading}
                                 style={{
                                     borderRadius: '12px',
                                     height: '48px',
