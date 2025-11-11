@@ -1,36 +1,36 @@
 import axios from 'axios';
 import { LoginUserData, LoginResponse, DecodedToken } from '../../../types/auth/login/auth';
 
-// Usar variable de entorno con valor por defecto
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io';
-const API_URL = `${API_BASE_URL}/api/User/Login`;
+// --- MODIFICACIÓN ---
+// Leemos la URL base de la API desde las variables de entorno.
+// Asumimos Create React App (CRA). Si usas Vite, cambia la línea de abajo.
 
-// Configurar axios con timeout
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: parseInt(process.env.REACT_APP_API_TIMEOUT || '10000'),
-  headers: {
-    'Content-Type': 'application/json',
-  }
-});
+// Para Create React App (CRA):
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+// Para Vite: (descomenta la siguiente línea y comenta la de arriba si usas Vite)
+// const API_BASE_URL = import.meta.env.VITE_API_URL;
+
+// Esta será la URL completa al endpoint de login
+const LOGIN_API_URL = `${API_BASE_URL}/api/User/Login`;
 
 export const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
-  console.log('🔍 Intentando login en:', API_URL);
-  console.log('📤 Datos enviados:', { ...userData, password: '***' }); // No loguear password real
-  
-  try {
-    const response = await apiClient.post<LoginResponse>('/api/User/Login', userData);
-    console.log('✅ Login exitoso');
-    return response.data;
-  } catch (error) {
-    console.error('❌ Error en login:', error);
-    throw error;
+  // Añadimos un chequeo para asegurar que la variable de entorno está cargada
+  if (!API_BASE_URL) {
+    console.error("Error: La variable de entorno (REACT_APP_API_URL o VITE_API_URL) no está configurada.");
+    throw new Error("Error de configuración: La URL del servidor no está disponible.");
   }
+
+  // Usamos la variable construida
+  const response = await axios.post<LoginResponse>(LOGIN_API_URL, userData);
+  return response.data;
 };
+
 
 export const saveToken = (token: string): void => {
   localStorage.setItem('authToken', token);
 };
+
 
 export const logoutUser = (): void => {
   localStorage.removeItem('authToken');
