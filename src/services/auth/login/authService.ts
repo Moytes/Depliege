@@ -8,10 +8,6 @@ import { LoginUserData, LoginResponse, DecodedToken } from '../../../types/auth/
 // Para Create React App (CRA):
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-// Para Vite: (descomenta la siguiente línea y comenta la de arriba si usas Vite)
-// const API_BASE_URL = import.meta.env.VITE_API_URL;
-
-// Esta será la URL completa al endpoint de login
 const LOGIN_API_URL = `${API_BASE_URL}/api/User/Login`;
 
 export const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
