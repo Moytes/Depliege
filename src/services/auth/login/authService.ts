@@ -10,8 +10,6 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 // Te dirá qué valor se "horneó" (baked in) durante el build en GitHub.
 console.log("AuthService: Valor de REACT_APP_API_URL (al cargar):", API_BASE_URL);
 
-// --- VALIDACIÓN DE URL ---
-// Función para validar que la URL es absoluta (empieza con http)
 const isValidHttpUrl = (url: string | undefined): boolean => {
   if (!url) return false;
   return url.startsWith('http://') || url.startsWith('https://');
