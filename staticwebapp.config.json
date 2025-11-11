@@ -1,6 +1,9 @@
 {
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/assets/*", "/*.{js,css,png,jpg,gif,svg,ico}"]
-  }
+  "routes": [
+    {
+      "route": "/api/*",
+      "methods": [ "GET", "POST", "PUT", "PATCH", "DELETE" ],
+      "rewrite": "https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/*"
+    }
+  ]
 }

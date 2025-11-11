@@ -2,7 +2,6 @@ import React from 'react';
 import { App as AntApp } from 'antd';
 
 import { CssBaseline } from '@mui/material';
-// Usamos BrowserRouter, ¡está perfecto!
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { ResponsiveView } from './views/landing/Inicio/ResponsiveView';
@@ -12,6 +11,8 @@ import { UserLayout } from './views/user/UserLayout';
 import { AdminWelcomeView } from './views/admin/page/dashboard/AdminWelcomeView';
 import { AdminProfileView } from './views/admin/page/perfile/AdminProfileView';
 import { UserManagementView } from './views/admin/page/gestionuser/UserManagementView';
+// --- IMPORTS DE ADMIN ELIMINADOS ---
+// (Ya no importamos AdminGestionInvernaderoView, AdminGestionInvernaderoFrioView, etc.)
 
 import { WelcomeUserView } from './views/user/dasbord/WelcomeUserView';
 import { GestionInvernaderoView } from './views/user/gestionInvernadero/GestionInvernaderoView';
@@ -23,47 +24,51 @@ import { ProtectedRoute } from './types/routes/ProtectedRoute';
 import { TermsView } from './views/auth/terminos/TermsView';
 
 function App() {
-    return (
-        <AntApp>
-            <CssBaseline />
-            <BrowserRouter>
-                <Routes>
-                    <Route
-                        path="/admin"
-                        element={
-                            <ProtectedRoute>
-                                <AdminLayout />
-                            </ProtectedRoute>
-                        }
-                    >
-                        <Route index element={<Navigate to="dashboard" replace />} />
-                        <Route path="dashboard" element={<AdminWelcomeView />} />
-                        <Route path="profile" element={<AdminProfileView />} />
-                        <Route path="users" element={<UserManagementView />} />
-                    </Route>
+    return (
+        <AntApp>
+            <CssBaseline />
+            <BrowserRouter>
+                <Routes>
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute>
+                                <AdminLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<Navigate to="dashboard" replace />} />
+                        <Route path="dashboard" element={<AdminWelcomeView />} />
+                        <Route path="profile" element={<AdminProfileView />} />
+                        <Route path="users" element={<UserManagementView />} />
+                        
+                        {/* --- RUTAS DE GESTIÓN ELIMINADAS DE ADMIN --- */}
+                    </Route>
 
-                    <Route
-                        path="/user"
-                        element={
-                            <ProtectedRoute>
-                                <UserLayout />
-                            </ProtectedRoute>
-                        }
-                    >
-                        <Route index element={<Navigate to="welcome" replace />} />
-                        <Route path="welcome" element={<WelcomeUserView />} />
-                        <Route path="profile" element={<UserProfileView />} />
-                        <Route path="gestion-invernadero" element={<GestionInvernaderoView />} />
-                        <Route path="gestion-invernadero/frio" element={<GestionInvernaderoFrioView />} />
-                        <Route path="gestion-invernadero/calido" element={<GestionInvernaderoCalidoView />} />
-f                  </Route>        
-                    <Route path="/terminos" element={<TermsView />} />
-                    
-                    <Route path="/*" element={<ResponsiveView />} />
-                </Routes>
-            </BrowserRouter>
-        </AntApp>
-    );
+                    <Route
+                        path="/user"
+                        element={
+                            <ProtectedRoute>
+                                <UserLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<Navigate to="welcome" replace />} />
+                        <Route path="welcome" element={<WelcomeUserView />} />
+                        <Route path="profile" element={<UserProfileView />} />
+                        
+                        {/* --- RUTAS DE GESTIÓN DE USUARIO (CORREGIDAS CON :id) --- */}
+                        <Route path="gestion-invernadero" element={<GestionInvernaderoView />} />
+                        <Route path="gestion-invernadero/:id/frio" element={<GestionInvernaderoFrioView />} />
+                        <Route path="gestion-invernadero/:id/calido" element={<GestionInvernaderoCalidoView />} />
+                    </Route>      
+                    <Route path="/terminos" element={<TermsView />} />
+                    
+                    <Route path="/*" element={<ResponsiveView />} />
+                </Routes>
+            </BrowserRouter>
+        </AntApp>
+    );
 }
 
 export default App;
