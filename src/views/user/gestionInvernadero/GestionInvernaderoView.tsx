@@ -1,43 +1,11 @@
 import React, { useState, useEffect, FC, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    Typography,
-    Box,
-    Button,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    IconButton,
-    CircularProgress,
-    Alert,
-    Tooltip,
-    Modal,
-    TextField,
-    Stack
-} from '@mui/material';
-import {
-    Add,
-    Edit,
-    DeleteOutline,
-    AcUnit,
-    WbSunny
-} from '@mui/icons-material';
+import {Typography,Box,Button,Paper,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,IconButton,CircularProgress,Alert,Tooltip,Modal,TextField,Stack} from '@mui/material';
+import {Add,Edit,DeleteOutline,AcUnit,WbSunny} from '@mui/icons-material';
 
-// CAMBIO: Corregida la ruta de importación a relativa (subir 3 niveles)
-import {
-    getGreenhousesByUser,
-    addGreenhouse,
-    patchGreenhouse,
-    deleteGreenhouse
-} from '../../../services/admin/gestionuser/Invernaderos/GreenhouseController';
-// CAMBIO: Corregida la ruta de importación a relativa (subir 3 niveles)
+import {getGreenhousesByUser,addGreenhouse,patchGreenhouse,deleteGreenhouse} from '../../../services/admin/gestionuser/Invernaderos/GreenhouseController';
 import { GetGreenhouseDto, AddGreenhouseRequest, PatchGreenhouseRequest } from '../../../types/admin/greenhouse/greenhouse';
 
-// Estilo para los modales
 const modalStyle = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -51,25 +19,21 @@ const modalStyle = {
     borderRadius: 2,
 };
 
-// CAMBIO: Renombramos el componente
 export const GestionInvernaderoView: FC = () => {
     const [greenhouses, setGreenhouses] = useState<GetGreenhouseDto[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedGreenhouse, setSelectedGreenhouse] = useState<GetGreenhouseDto | null>(null);
 
-    // Estado para Modales
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
-    // Estado para Formularios
     const [newGreenhouseData, setNewGreenhouseData] = useState<AddGreenhouseRequest>({ name: '', location: '' });
     const [editGreenhouseData, setEditGreenhouseData] = useState<PatchGreenhouseRequest>({ name: '', location: '' });
 
     const navigate = useNavigate();
 
-    // --- EFECTO PARA OBTENER DATOS ---
     useEffect(() => {
         fetchData();
     }, []);
@@ -81,7 +45,6 @@ export const GestionInvernaderoView: FC = () => {
             const data = await getGreenhousesByUser();
             setGreenhouses(data);
         } catch (err: any) {
-            // CAMBIO: Capturamos el error 403 (Forbidden)
             if (err.message && (err.message.includes('401') || err.message.includes('403'))) {
                 setError('No tienes permiso para ver este recurso. (Error 401/403)');
             } else {
@@ -92,18 +55,14 @@ export const GestionInvernaderoView: FC = () => {
         }
     };
 
-    // --- MANEJADORES DE NAVEGACIÓN ---
     const handleNavigateToCold = (id: string) => {
-        // CAMBIO: Ruta a /user
         navigate(`/user/gestion-invernadero/${id}/frio`);
     };
 
     const handleNavigateToHot = (id: string) => {
-        // CAMBIO: Ruta a /user
         navigate(`/user/gestion-invernadero/${id}/calido`);
     };
 
-    // --- MANEJADORES MODAL DE CREACIÓN ---
     const handleOpenCreateModal = () => {
         setNewGreenhouseData({ name: '', location: '' });
         setIsCreateModalOpen(true);
@@ -118,13 +77,12 @@ export const GestionInvernaderoView: FC = () => {
         try {
             await addGreenhouse(newGreenhouseData);
             handleCloseCreateModal();
-            fetchData(); // Recargar datos
+            fetchData(); 
         } catch (err: any) {
             setError(err.message || 'Error al crear el invernadero.');
         }
     };
 
-    // --- MANEJADORES MODAL DE EDICIÓN ---
     const handleOpenEditModal = (greenhouse: GetGreenhouseDto) => {
         setSelectedGreenhouse(greenhouse);
         setEditGreenhouseData({ name: greenhouse.name, location: greenhouse.location });
@@ -144,13 +102,12 @@ export const GestionInvernaderoView: FC = () => {
         try {
             await patchGreenhouse(selectedGreenhouse.id, editGreenhouseData);
             handleCloseEditModal();
-            fetchData(); // Recargar datos
+            fetchData(); 
         } catch (err: any) {
             setError(err.message || 'Error al actualizar el invernadero.');
         }
     };
 
-    // --- MANEJADORES MODAL DE ELIMINACIÓN ---
     const handleOpenDeleteModal = (greenhouse: GetGreenhouseDto) => {
         setSelectedGreenhouse(greenhouse);
         setIsDeleteModalOpen(true);
@@ -165,13 +122,12 @@ export const GestionInvernaderoView: FC = () => {
         try {
             await deleteGreenhouse(selectedGreenhouse.id);
             handleCloseDeleteModal();
-            fetchData(); // Recargar datos
+            fetchData(); 
         } catch (err: any) {
             setError(err.message || 'Error al eliminar el invernadero.');
         }
     };
 
-    // --- RENDERIZADO ---
     if (loading) {
         return <CircularProgress />;
     }
@@ -239,7 +195,6 @@ export const GestionInvernaderoView: FC = () => {
                 </TableContainer>
             )}
 
-            {/* --- MODAL DE CREACIÓN --- */}
             <Modal open={isCreateModalOpen} onClose={handleCloseCreateModal}>
                 <Box sx={modalStyle}>
                     <Typography variant="h6" component="h2">Añadir Nuevo Invernadero</Typography>
@@ -266,7 +221,6 @@ export const GestionInvernaderoView: FC = () => {
                 </Box>
             </Modal>
 
-            {/* --- MODAL DE EDICIÓN --- */}
             <Modal open={isEditModalOpen} onClose={handleCloseEditModal}>
                 <Box sx={modalStyle}>
                     <Typography variant="h6" component="h2">Editar Invernadero</Typography>
@@ -293,7 +247,6 @@ export const GestionInvernaderoView: FC = () => {
                 </Box>
             </Modal>
 
-            {/* --- MODAL DE ELIMINACIÓN --- */}
             <Modal open={isDeleteModalOpen} onClose={handleCloseDeleteModal}>
                 <Box sx={modalStyle}>
                     <Typography variant="h6" component="h2">Confirmar Eliminación</Typography>
