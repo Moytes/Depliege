@@ -1,12 +1,13 @@
 import React from 'react';
-import { Drawer, Typography, Space, Button } from 'antd';
+import { Drawer, Typography, Space, Button, Flex } from 'antd';
 import { 
-    UserAddOutlined,
     LoginOutlined,
     HomeOutlined,
     TeamOutlined,
-    CloseOutlined 
+    CloseOutlined,
+    UserAddOutlined
 } from '@ant-design/icons';
+import { theme, hexToRgba } from '../../../../theme/landing/invernadero/theme';
 
 interface MobileMenuProps {
     visible: boolean;
@@ -35,46 +36,102 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 }) => {
 
     const mobileButtonStyle: React.CSSProperties = {
-        borderRadius: '12px', 
-        color: 'rgba(255, 255, 255, 0.9)',
-        background: 'rgba(255, 255, 255, 0.05)',
-        border: '1px solid rgba(255, 255, 255, 0.1)', 
-        height: '48px',
+        borderRadius: '14px', 
+        color: theme.text,
+        background: hexToRgba(theme.text, 0.05),
+        border: `1px solid ${hexToRgba(theme.text, 0.15)}`, 
+        height: '56px',
         fontSize: '16px',
-        fontWeight: 500,
+        fontWeight: 600,
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        padding: '0 20px',
+    };
+
+    const registerButtonStyle: React.CSSProperties = {
+        ...mobileButtonStyle,
+        background: `linear-gradient(135deg, ${theme.secondary}, ${theme.accent})`,
+        color: theme.primaryDark,
+        border: 'none',
+        fontWeight: 700,
+        boxShadow: `0 4px 15px ${hexToRgba(theme.secondary, 0.3)}`,
+    };
+
+    const getHoverStyle = (isRegister = false) => {
+        if (isRegister) {
+            return {
+                background: `linear-gradient(135deg, ${theme.accent}, ${theme.secondary})`,
+                transform: 'translateY(-2px)',
+                boxShadow: `0 6px 20px ${hexToRgba(theme.secondary, 0.4)}`,
+                color: theme.primaryDark,
+            };
+        }
+        return {
+            background: hexToRgba(theme.secondary, 0.1),
+            border: `1px solid ${theme.secondary}`,
+            color: theme.secondary,
+            transform: 'translateX(8px)',
+        };
     };
 
     return (
         <Drawer
             title={
-                <Typography.Title level={4} style={{ color: 'white', margin: 0 }}>
-                    Menú
-                </Typography.Title>
+                <Flex align="center" justify="space-between" style={{ width: '100%' }}>
+                    <Typography.Title level={4} style={{ 
+                        color: theme.text, 
+                        margin: 0,
+                        background: `linear-gradient(135deg, ${theme.text}, ${theme.textLight})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                    }}>
+                        Navegación
+                    </Typography.Title>
+                </Flex>
             }
             placement="right"
             onClose={onClose}
-            visible={visible}
-
+            open={visible}
             headerStyle={{ 
-                backgroundColor: '#003366',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)', 
+                background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.primaryDark} 100%)`,
+                borderBottom: `1px solid ${hexToRgba(theme.textLight, 0.1)}`, 
+                borderRadius: '0',
             }}
-
-            drawerStyle={{ 
-                backgroundColor: '#003366',
-                borderRadius: '15px 0 0 15px',
+            bodyStyle={{
+                background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.primaryDark} 100%)`,
+                padding: '24px 20px',
             }}
-            closeIcon={<CloseOutlined style={{ color: 'white', fontSize: '18px' }} />}
+            styles={{
+                body: {
+                    background: `linear-gradient(135deg, ${theme.primary} 0%, ${theme.primaryDark} 100%)`,
+                }
+            }}
+            closeIcon={<CloseOutlined style={{ 
+                color: theme.text, 
+                fontSize: '20px',
+                background: hexToRgba(theme.text, 0.1),
+                borderRadius: '8px',
+                padding: '4px',
+            }} />}
+            width={300}
         >
             <Space direction="vertical" style={{ width: '100%' }} size="middle">
                 {!isHomePage && (
                     <Button 
                         type="text" 
                         size="large" 
-                        icon={<HomeOutlined />} 
+                        icon={<HomeOutlined style={{ fontSize: '18px' }} />} 
                         onClick={onHomeClick} 
                         block
-                        style={mobileButtonStyle} 
+                        style={mobileButtonStyle}
+                        onMouseEnter={(e) => {
+                            Object.assign(e.currentTarget.style, getHoverStyle());
+                        }}
+                        onMouseLeave={(e) => {
+                            Object.assign(e.currentTarget.style, mobileButtonStyle);
+                        }}
                     >
                         Inicio
                     </Button>
@@ -83,10 +140,16 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                     <Button 
                         type="text" 
                         size="large" 
-                        icon={<TeamOutlined />} 
+                        icon={<TeamOutlined style={{ fontSize: '18px' }} />} 
                         onClick={onAboutClick} 
                         block
-                        style={mobileButtonStyle} 
+                        style={mobileButtonStyle}
+                        onMouseEnter={(e) => {
+                            Object.assign(e.currentTarget.style, getHoverStyle());
+                        }}
+                        onMouseLeave={(e) => {
+                            Object.assign(e.currentTarget.style, mobileButtonStyle);
+                        }}
                     >
                         Sobre Nosotros
                     </Button>
@@ -95,24 +158,36 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                     <Button 
                         type="text" 
                         size="large" 
-                        icon={<LoginOutlined />} 
+                        icon={<LoginOutlined style={{ fontSize: '18px' }} />} 
                         onClick={onLoginClick} 
                         block
-                        style={mobileButtonStyle} 
+                        style={mobileButtonStyle}
+                        onMouseEnter={(e) => {
+                            Object.assign(e.currentTarget.style, getHoverStyle());
+                        }}
+                        onMouseLeave={(e) => {
+                            Object.assign(e.currentTarget.style, mobileButtonStyle);
+                        }}
                     >
-                        Login
+                        Iniciar Sesión
                     </Button>
                 )}
                 {!isRegisterPage && (
                     <Button 
                         type="text" 
                         size="large" 
-                        icon={<UserAddOutlined />} 
+                        icon={<UserAddOutlined style={{ fontSize: '18px' }} />} 
                         onClick={onRegisterClick} 
                         block
-                        style={mobileButtonStyle} 
+                        style={registerButtonStyle}
+                        onMouseEnter={(e) => {
+                            Object.assign(e.currentTarget.style, getHoverStyle(true));
+                        }}
+                        onMouseLeave={(e) => {
+                            Object.assign(e.currentTarget.style, registerButtonStyle);
+                        }}
                     >
-                        Registrar
+                        Registrarse
                     </Button>
                 )}
             </Space>

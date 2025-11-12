@@ -1,34 +1,31 @@
 import React from 'react';
 import { Layout, ConfigProvider } from 'antd';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'; 
-
 import { LoginView } from '../../auth/login/LoginView';
 import { RegisterView } from '../../auth/register/RegisterView';
 import { AppHeader } from '../../../layout/Header/landing/inico/AppHeader';
 import { AppFooter } from '../../../layout/Footer/landing/inicio/AppFooter';
 import { AboutUsView } from '../../landing/about/AboutUsView';
 import { InvernaderoUteqView } from '../../landing/invernadero/InvernaderoUteqView'; 
+import { theme } from '../../../theme/landing/invernadero/theme';
 
 const { Content } = Layout;
-
-const colors = {
-    green: '#66BB6A',
-    greenDark: '#2E7D32',
-};
 
 const defaultContentStyle: React.CSSProperties = {
     flex: '1 1 auto',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: '24px 16px',
-    backgroundColor: '#f4f6f8',
+    padding: '16px',
+    backgroundColor: theme.primaryDark,
+    minHeight: 'calc(100vh - 120px)',
 };
 
 const fullWidthContentStyle: React.CSSProperties = {
     flex: '1 1 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    backgroundColor: theme.primaryDark,
 };
 
 export const ResponsiveView = () => {
@@ -41,9 +38,36 @@ export const ResponsiveView = () => {
         ? fullWidthContentStyle 
         : defaultContentStyle;
 
+    const layoutStyle: React.CSSProperties = {
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: `linear-gradient(135deg, ${theme.primaryDark} 0%, ${theme.primary} 100%)`,
+    };
+
     return (
-        <ConfigProvider theme={{ token: { colorPrimary: colors.green, colorPrimaryHover: colors.greenDark } }}>
-            <Layout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <ConfigProvider 
+            theme={{ 
+                token: { 
+                    colorPrimary: theme.secondary,
+                    colorPrimaryHover: theme.accent,
+                    colorBgLayout: theme.primaryDark,
+                    colorText: theme.text,
+                    colorTextSecondary: theme.textLight,
+                    colorTextTertiary: theme.textMuted,
+                    borderRadius: 8,
+                    wireframe: false,
+                },
+                components: {
+                    Layout: {
+                        bodyBg: theme.primaryDark,
+                        headerBg: theme.primary,
+                        footerBg: theme.primaryDark,
+                    }
+                }
+            }}
+        >
+            <Layout style={layoutStyle}>
                 
                 <AppHeader 
                     onRegisterClick={() => navigate('/register')}
@@ -52,6 +76,7 @@ export const ResponsiveView = () => {
                     onLogoClick={() => navigate('/')} 
                     onHomeClick={() => navigate('/')} 
                 />
+                
                 <Content style={activeContentStyle}>
                     <Routes>
                         <Route 
@@ -74,7 +99,6 @@ export const ResponsiveView = () => {
                             path="/register" 
                             element={<RegisterView onBackToLogin={() => navigate('/login')} />} 
                         />
-                        
                     </Routes>
                 </Content>
 
