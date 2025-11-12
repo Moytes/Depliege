@@ -1,21 +1,38 @@
-import { useState } from 'react';
-import { Form, message } from 'antd';
-import { useNavigate, useParams } from 'react-router-dom';
-// Importa las *funciones* del servicio
-import { verifyUserAccount, resendVerificationCode } from '../../../services/auth/registro/authService';
-// Importa los *tipos* de verificación (según tu 'ls')
+import { useState, useEffect } from 'react';
+import { Form, App } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { verifyUserAccount, resendVerificationCode } from '../../../services/auth/verify/verifyService';
 import { VerifyAccountData, ResendCodeData } from '../../../types/auth/registro/verify/auth';
+import { decodeToken } from '../../../services/auth/login/authService';
+import { DecodedToken } from '../../../types/auth/login/auth';
 
-// Exporta el hook que la vista está buscando
 export const useVerifyAccountForm = () => {
     const [form] = Form.useForm();
+    const { message } = App.useApp();
     const [loading, setLoading] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false); 
+    const [userId, setUserId] = useState<string | null>(null); 
     const navigate = useNavigate();
-    const { userId } = useParams<{ userId: string }>();
+
+    useEffect(() => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            const decoded: DecodedToken | null = decodeToken(token);
+            if (decoded && decoded.sub) {
+                setUserId(decoded.sub);
+            } else {
+                message.error("Error: Token inválido. Por favor, inicie sesión de nuevo.");
+                navigate('/'); 
+            }
+        } else {
+            message.error("Error: No está autenticado. Por favor, inicie sesión.");
+            navigate('/'); 
+        }
+    }, [navigate, message]); 
 
     const onFinish = async (values: any) => {
         if (!userId) {
-            message.error("Error: No se encontró el ID de usuario.");
+            message.error("Error: No se pudo identificar al usuario desde el token.");
             return;
         }
 
@@ -23,13 +40,12 @@ export const useVerifyAccountForm = () => {
         try {
             const data: VerifyAccountData = {
                 userId: userId,
-                verificationCode: values.verificationCode
+                VerificationCode: values.verificationCode // Corregido de camelCase
             };
 
             const response = await verifyUserAccount(data);
-            message.success(response.message || '¡Cuenta verificada con éxito! Ya puedes iniciar sesión.');
-            
-            // Redirigir a la vista de login (que está en '/')
+            message.success(response.message || '¡Cuenta verificada con éxito!');
+            localStorage.removeItem('authToken');
             navigate('/'); 
 
         } catch (error: any) {
@@ -48,23 +64,27 @@ export const useVerifyAccountForm = () => {
 
     const onResendCode = async () => {
         if (!userId) {
-            return { success: false, message: "Error: No se encontró el ID de usuario." };
+            message.error("Error: No se pudo identificar al usuario.");
+            return;
         }
 
+        setResendLoading(true);
         try {
             const data: ResendCodeData = { userId };
             const response = await resendVerificationCode(data);
-            return { success: true, message: response.message || 'Código reenviado con éxito.' };
-
+            message.success(response.message || 'Código reenviado con éxito.');
         } catch (error: any) {
             console.error('Error al reenviar código:', error);
-            return { success: false, message: error.errorMessage || 'No se pudo reenviar el código.' };
+            message.error(error.errorMessage || 'No se pudo reenviar el código.');
+        } finally {
+            setResendLoading(false);
         }
     };
 
     return {
         form,
         loading,
+        resendLoading, 
         onFinish,
         onResendCode,
     };

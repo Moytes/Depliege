@@ -1,6 +1,5 @@
 import React from 'react';
 import { App as AntApp } from 'antd';
-
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -20,7 +19,6 @@ import { UserProfileView } from './views/user/profile/UserProfileView';
 import { ProtectedRoute } from './types/routes/ProtectedRoute';
 
 import { TermsView } from './views/auth/terminos/TermsView';
-// --- NUEVA IMPORTACIÓN ---
 import { VerifyAccountView } from './views/auth/Activacioncuenta/VerifyAccountView';
 
 function App() {
@@ -41,7 +39,6 @@ function App() {
                         <Route path="dashboard" element={<AdminWelcomeView />} />
                         <Route path="profile" element={<AdminProfileView />} />
                         <Route path="users" element={<UserManagementView />} />
-                        
                     </Route>
 
                     <Route
@@ -58,14 +55,12 @@ function App() {
                         <Route path="gestion-invernadero" element={<GestionInvernaderoView />} />
                         <Route path="gestion-invernadero/:id/frio" element={<GestionInvernaderoFrioView />} />
                         <Route path="gestion-invernadero/:id/calido" element={<GestionInvernaderoCalidoView />} />
-                    </Route>    
-                    
+                    </Route>
+
                     <Route path="/terminos" element={<TermsView />} />
                     
-                    {/* --- NUEVA RUTA DE VERIFICACIÓN --- */}
-                    <Route path="/verify-account/:userId" element={<VerifyAccountView />} />
+                    <Route path="/activar-cuenta" element={<VerifyAccountView />} />
                     
-                    {/* Ruta de Login/Registro (Landing) */}
                     <Route path="/*" element={<ResponsiveView />} />
                 </Routes>
             </BrowserRouter>

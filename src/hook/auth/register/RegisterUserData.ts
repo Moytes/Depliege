@@ -1,5 +1,3 @@
-// 📍 Archivo: src/hook/auth/register/RegisterUserData.ts
-
 import { useState } from 'react';
 import { Form, message } from 'antd';
 import { SHA256 } from 'crypto-js';
@@ -7,8 +5,6 @@ import { registerUser } from '../../../services/auth/registro/authService';
 import { RegisterUserData } from '../../../types/auth/registro/auth';
 import { useNavigate } from 'react-router-dom'; 
 
-// La interfaz 'UseRegisterFormProps' se eliminó para limpiar el warning
-// El hook ya no recibe props
 export const useRegisterForm = () => { 
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
@@ -36,9 +32,6 @@ export const useRegisterForm = () => {
             
             message.success('¡Registro completado! Por favor, inicia sesión y verifica tu cuenta.');
             form.resetFields();
-
-            // Redirige al Login (raíz) como acordamos,
-            // ya que la verificación requiere token.
             navigate('/');
 
         } catch (error: any) {

@@ -1,7 +1,6 @@
-// 📍 Archivo: src/types/auth/registro/verify/auth.ts
 export interface VerifyAccountData {
     userId: string;
-    verificationCode: string;
+    VerificationCode: string;
 }
 
 export interface ResendCodeData {

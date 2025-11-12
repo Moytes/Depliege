@@ -11,14 +11,10 @@ export const TermsView = () => {
     const screens = useBreakpoint();
     const navigate = useNavigate();
 
-    // Función para volver a la página anterior
     const handleGoBack = () => {
-        navigate(-1); // Navega un paso atrás en el historial
+        navigate(-1); 
     };
 
-    // ----------------------------------------------------------------
-    // Objeto de Estilos
-    // ----------------------------------------------------------------
     const styles = {
         pageWrapper: (screens: any): React.CSSProperties => ({
             display: 'flex',
@@ -46,13 +42,11 @@ export const TermsView = () => {
             background: 'transparent',
             paddingBottom: '16px'
         } as React.CSSProperties,
-        
-        // ----- AJUSTE DE TEXTO RESPONSIVO -----
         title: {
             margin: 0,
             color: theme.text,
             fontWeight: 600,
-            fontSize: screens.md ? '1.75rem' : '1.25rem', // PC (md) | Mobile
+            fontSize: screens.md ? '1.75rem' : '1.25rem',
         } as React.CSSProperties,
         
         cardBody: (screens: any): React.CSSProperties => ({
@@ -80,35 +74,30 @@ export const TermsView = () => {
             color: theme.textMuted,
             fontWeight: 500,
         } as React.CSSProperties,
-        
-        // ----- AJUSTE DE TEXTO RESPONSIVO -----
         sectionTitle: {
             color: theme.text,
             marginTop: '16px',
             marginBottom: '8px',
-            fontSize: screens.md ? '1.25rem' : '1.1rem', // PC (md) | Mobile
+            fontSize: screens.md ? '1.25rem' : '1.1rem',
         } as React.CSSProperties,
-        
-        // ----- AJUSTE DE TEXTO RESPONSIVO -----
+
         paragraph: {
             color: theme.textLight,
             lineHeight: '1.6',
             textAlign: 'justify',
-            fontSize: screens.md ? '1rem' : '0.9rem', // PC (md) | Mobile
+            fontSize: screens.md ? '1rem' : '0.9rem', 
         } as React.CSSProperties,
         
-        // ----- AJUSTE DE TEXTO RESPONSIVO -----
         policyTitle: {
             color: theme.text,
             marginTop: '32px',
             marginBottom: '16px',
             paddingTop: '32px',
             borderTop: `1px solid ${hexToRgba(theme.textMuted, 0.3)}`,
-            fontSize: screens.md ? '1.5rem' : '1.2rem', // PC (md) | Mobile
+            fontSize: screens.md ? '1.5rem' : '1.2rem', 
         } as React.CSSProperties,
     };
 
-    // Pre-calculamos los colores para el tag <style>
     const scrollbarTrackBg = hexToRgba(theme.primaryDark, 0.5);
     const scrollbarThumbBg = hexToRgba(theme.secondary, 0.7);
     const scrollbarThumbHoverBg = theme.secondary;
@@ -155,14 +144,12 @@ export const TermsView = () => {
                 <Card
                     style={styles.card(screens)}
                     title={
-                        // Este título ahora usará styles.title responsivo
                         <Title level={3} style={styles.title}>
                             Términos y Condiciones de Uso
                         </Title>
                     }
                     bodyStyle={styles.cardBody(screens)}
                 >
-                    {/* El contenido usará los estilos responsivos */}
                     <div className="scrollable-content" style={styles.scrollableContent(screens)}>
                         
                         <Paragraph style={styles.paragraph}>
@@ -231,9 +218,6 @@ export const TermsView = () => {
                             Estos Términos se rigen por las leyes mexicanas. Cualquier disputa será resuelta en los tribunales competentes del estado de Querétaro, México.
                         </Paragraph>
 
-                        
-                        {/* --- SECCIÓN DE POLÍTICA DE PRIVACIDAD --- */}
-                        
                         <Title level={4} style={styles.policyTitle}>Política de Privacidad</Title>
                         
                         <Paragraph style={styles.paragraph}>
@@ -392,7 +376,6 @@ export const TermsView = () => {
 
                     </div>
                     
-                    {/* Pie de página con el botón "Volver" */}
                     <div style={styles.footer}>
                         <Button
                             type="link"

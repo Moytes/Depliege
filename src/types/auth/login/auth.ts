@@ -1,14 +1,17 @@
 export interface LoginUserData {
-    mail: string;
-    password: string;
+    Mail: string;
+    Password: string;
 }
+
 export interface LoginResponse {
     jwttoken: string;
-    role: any; 
+    role: number; 
+    verified: number; 
 }
+
 export interface DecodedToken {
-  email?: string;
-  nameid?: string;
-  exp?: number;
-  [key: string]: any; 
+    rol?: string; 
+    sub?: string; 
+    exp?: number;
+    [key: string]: any;
 }

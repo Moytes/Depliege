@@ -1,27 +1,19 @@
-// 📍 Archivo: src/views/auth/register/RegisterView.tsx
-
 import React from 'react';
 import { Form, Input, Button, Card, Typography, Flex, Grid, Checkbox, ConfigProvider } from 'antd';
 import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
-// --- 1. IMPORTA EL HOOK DESDE SU ARCHIVO CORRECTO ---
 import { useRegisterForm } from '../../../hook/auth/register/RegisterUserData';
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
 
 const { useBreakpoint } = Grid;
 const { Title, Text, Link } = Typography;
-
 interface RegisterViewProps {
     onBackToLogin: () => void;
 }
 
-// --- 2. EXPORTA EL COMPONENTE 'RegisterView' ---
 export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => {
-    const screens = useBreakpoint();
-    
-    // --- 3. LLAMA AL HOOK SIN PARÁMETROS ---
-    // El hook ya no necesita 'onBackToLogin' porque usa 'navigate'
-    const { form, loading, onFinish } = useRegisterForm();
 
+    const screens = useBreakpoint();
+    const { form, loading, onFinish } = useRegisterForm();
     const inputStyle: React.CSSProperties = {
         borderRadius: '8px',
         padding: '12px',
@@ -226,6 +218,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => 
                                 Volver a Iniciar Sesión
                             </Button>
                         </Flex>
+
                     </Form>
                 </Card>
             </div>
