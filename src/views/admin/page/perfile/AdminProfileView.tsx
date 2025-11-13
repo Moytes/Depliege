@@ -1,18 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Card,
-    Row,
-    Col,
-    Avatar,
-    Typography,
-    Button,
-    Modal,
-    Form,
-    Input,
-    message,
-    Divider,
-    Space
-} from 'antd';
+import {Card,Row,Col,Avatar,Typography,Button,Modal,Form,Input,message,Divider,Space} from 'antd';
 import { UserOutlined, EditOutlined, LockOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -51,7 +38,7 @@ export const AdminProfileView: React.FC = () => {
                         <Avatar
                             size={{ xs: 80, sm: 100, md: 120, lg: 140, xl: 160 }}
                             icon={<UserOutlined />}
-                            src={userData.avatarUrl} // Muestra la imagen si la URL existe
+                            src={userData.avatarUrl} 
                         />
                     </Col>
 

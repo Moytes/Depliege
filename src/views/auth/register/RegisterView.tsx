@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Card, Typography, Flex, Grid, Checkbox, ConfigProvider } from 'antd';
-import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { MailOutlined, LockOutlined, UserOutlined, ArrowLeftOutlined} from '@ant-design/icons';
 import { useRegisterForm } from '../../../hook/auth/register/RegisterUserData';
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
 

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'; 
-import { Card, Typography, Radio, Alert } from 'antd'; // Agregué Alert para data vacía
+import { Card, Typography, Radio, Alert } from 'antd';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceArea } from 'recharts';
 
 const { Title } = Typography;
@@ -66,7 +66,7 @@ export const SensorChart: React.FC<SensorChartProps> = ({
         return data.filter((d: any) => {
             const itemTime = new Date(d.timestamp).getTime();
             if (isNaN(itemTime)) {
-                console.warn(`Timestamp inválido: ${d.timestamp}`); // Log para depuración
+                console.warn(`Timestamp inválido: ${d.timestamp}`);
                 return false;
             }
             return itemTime >= cutoffTime;

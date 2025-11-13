@@ -1,12 +1,6 @@
 import React from 'react';
 import { Drawer, Typography, Space, Button, Flex } from 'antd';
-import { 
-    LoginOutlined,
-    HomeOutlined,
-    TeamOutlined,
-    CloseOutlined,
-    UserAddOutlined
-} from '@ant-design/icons';
+import { LoginOutlined,HomeOutlined,TeamOutlined,CloseOutlined,UserAddOutlined} from '@ant-design/icons';
 import { theme, hexToRgba } from '../../../../theme/landing/invernadero/theme';
 
 interface MobileMenuProps {

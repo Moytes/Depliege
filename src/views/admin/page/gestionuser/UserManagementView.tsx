@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { App, Table, Typography, Button, Space, Modal, Form, Input, Select, Tag, Tooltip, Dropdown, Menu,Alert} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, MoreOutlined,MailOutlined,LockOutlined,UserOutlined} from '@ant-design/icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { App, Table, Typography, Button, Space, Modal, Form, Input, Select, Tag, Tooltip, Dropdown, Menu, Alert } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, MoreOutlined, MailOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 
-import { GetUsersDto, Roles, Status, PatchUserRequest} from '../../../../types/admin/user/userTypes';
+import { GetUsersDto, Roles, Status, PatchUserRequest } from '../../../../types/admin/user/userTypes';
 
 import { getUsers, createUser, deleteUser, patchUser, resendVerificationCode } from '../../../../services/admin/user/userAdminService';
 
@@ -20,7 +20,7 @@ export const UserManagementView: React.FC = () => {
 
     const [form] = Form.useForm();
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getUsers();
@@ -30,11 +30,11 @@ export const UserManagementView: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [message]); // 'message' es una dependencia externa
 
     useEffect(() => {
         fetchUsers();
-    }, []);
+    }, [fetchUsers]); // Ahora fetchUsers es una dependencia estable
 
 
     const handleOpenAddModal = () => {
@@ -79,7 +79,7 @@ export const UserManagementView: React.FC = () => {
                 message.success('Usuario creado correctamente.');
             }
             handleCancel();
-            fetchUsers(); 
+            fetchUsers();
         } catch (error: any) {
             message.error(error.message || 'Error al guardar el usuario.');
         } finally {
@@ -98,7 +98,7 @@ export const UserManagementView: React.FC = () => {
                 try {
                     await deleteUser(id);
                     message.success('Usuario eliminado (inactivado) correctamente.');
-                    fetchUsers(); 
+                    fetchUsers();
                 } catch (error: any) {
                     message.error(error.message || 'Error al eliminar el usuario.');
                 }
@@ -114,7 +114,7 @@ export const UserManagementView: React.FC = () => {
             message.error(error.message || 'Error al reenviar el código.');
         }
     };
-    
+
     const PasswordApiLimitationAlert = () => (
         <Alert
             type="warning"
@@ -193,24 +193,24 @@ export const UserManagementView: React.FC = () => {
             render: (_, record) => (
                 <Space>
                     <Tooltip title="Editar">
-                        <Button 
-                            type="primary" 
-                            icon={<EditOutlined />} 
-                            onClick={() => handleOpenEditModal(record)} 
+                        <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            onClick={() => handleOpenEditModal(record)}
                         />
                     </Tooltip>
                     <Tooltip title="Eliminar (Inactivar)">
-                        <Button 
-                            danger 
-                            icon={<DeleteOutlined />} 
-                            onClick={() => handleDelete(record.id)} 
+                        <Button
+                            danger
+                            icon={<DeleteOutlined />}
+                            onClick={() => handleDelete(record.id)}
                         />
                     </Tooltip>
                     <Dropdown
                         overlay={
                             <Menu>
-                                <Menu.Item 
-                                    key="resendCode" 
+                                <Menu.Item
+                                    key="resendCode"
                                     icon={<MailOutlined />}
                                     onClick={() => handleResendCode(record.id)}
                                 >
@@ -232,15 +232,15 @@ export const UserManagementView: React.FC = () => {
                 <Title level={2}>Gestión de Usuarios</Title>
                 <Space>
                     <Tooltip title="Recargar lista">
-                        <Button 
-                            icon={<ReloadOutlined />} 
-                            onClick={fetchUsers} 
+                        <Button
+                            icon={<ReloadOutlined />}
+                            onClick={fetchUsers}
                             loading={loading}
                         />
                     </Tooltip>
-                    <Button 
-                        type="primary" 
-                        icon={<PlusOutlined />} 
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
                         onClick={handleOpenAddModal}
                     >
                         Crear Usuario
@@ -250,11 +250,11 @@ export const UserManagementView: React.FC = () => {
 
             <PasswordApiLimitationAlert />
 
-            <Table 
-                columns={columns} 
-                dataSource={users} 
-                loading={loading} 
-                rowKey="id" 
+            <Table
+                columns={columns}
+                dataSource={users}
+                loading={loading}
+                rowKey="id"
                 scroll={{ x: 'max-content' }}
             />
 
@@ -262,7 +262,7 @@ export const UserManagementView: React.FC = () => {
                 title={editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}
                 open={isModalOpen}
                 onCancel={handleCancel}
-                footer={null} 
+                footer={null}
             >
                 <Form
                     form={form}
@@ -275,12 +275,12 @@ export const UserManagementView: React.FC = () => {
                         label="Nombre de Usuario"
                         rules={[{ required: true, message: 'El nombre de usuario es obligatorio' }]}
                     >
-                        <Input 
+                        <Input
                             prefix={<UserOutlined />}
-                            placeholder="Ej. juan.perez" 
+                            placeholder="Ej. juan.perez"
                         />
                     </Form.Item>
-                    
+
                     <Form.Item
                         name="mail"
                         label="Correo Electrónico"
@@ -289,9 +289,9 @@ export const UserManagementView: React.FC = () => {
                             { type: 'email', message: 'Debe ser un correo válido' }
                         ]}
                     >
-                        <Input 
+                        <Input
                             prefix={<MailOutlined />}
-                            placeholder="Ej. usuario@dominio.com" 
+                            placeholder="Ej. usuario@dominio.com"
                         />
                     </Form.Item>
 
@@ -302,9 +302,9 @@ export const UserManagementView: React.FC = () => {
                                 label="Contraseña"
                                 rules={[{ required: true, message: 'La contraseña es obligatoria' }]}
                             >
-                                <Input.Password 
+                                <Input.Password
                                     prefix={<LockOutlined />}
-                                    placeholder="Contraseña segura" 
+                                    placeholder="Contraseña segura"
                                 />
                             </Form.Item>
 
@@ -312,7 +312,7 @@ export const UserManagementView: React.FC = () => {
                                 name="role"
                                 label="Rol"
                                 rules={[{ required: true, message: 'El rol es obligatorio' }]}
-                                initialValue={Roles.User} 
+                                initialValue={Roles.User}
                             >
                                 <Select>
                                     <Option value={Roles.Administrador}>Administrador</Option>

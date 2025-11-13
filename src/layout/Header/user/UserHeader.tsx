@@ -1,13 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, Flex, Grid, Typography, Avatar, App } from 'antd'; // Importar App
-import {
-    LogoutOutlined,
-    MenuOutlined,
-    AppstoreOutlined,
-    UserOutlined,
-    EnvironmentOutlined // <- Añadir este icono
-} from '@ant-design/icons';
+import { Layout, Menu, Button, Flex, Grid, Typography, Avatar, App } from 'antd'; 
+import {LogoutOutlined,MenuOutlined,UserOutlined,EnvironmentOutlined } from '@ant-design/icons';
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -16,19 +10,16 @@ interface UserHeaderProps {
     onMenuClick: () => void;
 }
 
-// Se agrega el nuevo item para el perfil y se reordenan
 const menuItems = [
     { key: '/user/profile', icon: <UserOutlined />, label: 'Mi Perfil' },
-    // CAMBIO: Usamos el icono EnvironmentOutlined para consistencia
     { key: '/user/gestion-invernadero', icon: <EnvironmentOutlined />, label: 'Gestión Invernadero' },
-    // CAMBIO: La llave debe ser 'logout' para ser capturada por el handler
     { key: 'logout', icon: <LogoutOutlined />, label: 'Cerrar Sesión' },
 ];
 
 export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
     const screens = useBreakpoint();
     const navigate = useNavigate();
-    const { modal } = App.useApp(); // <- Añadir para el modal
+    const { modal } = App.useApp(); 
 
     const headerStyle: React.CSSProperties = {
         backgroundColor: '#003366',
@@ -47,7 +38,6 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
         margin: 0,
     };
 
-    // CAMBIO: Lógica de logout corregida
     const handleMenuClick = ({ key }: { key: string }) => {
         if (key === 'logout') {
             modal.confirm({
@@ -57,7 +47,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
                 cancelText: 'Cancelar',
                 onOk: () => {
                     localStorage.removeItem('authToken');
-                    navigate('/'); // Redirigir a la página principal (landing)
+                    navigate('/');
                 },
             });
         } else {
@@ -90,7 +80,6 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ onMenuClick }) => {
                             minWidth: '350px',
                             backgroundColor: 'transparent',
                         }}
-                        // Opcional: seleccionar la tecla activa basada en la ruta
                         selectedKeys={[window.location.pathname]}
                     />
                 ) : (

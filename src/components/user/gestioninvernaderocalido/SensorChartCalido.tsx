@@ -6,7 +6,7 @@ const { Title } = Typography;
 
 interface SensorChartProps {
     title: string;
-    data: any[]; // '
+    data: any[]; 
     tempDataKey: string;
     airHumidityDataKey: string;
     soilHumidityDataKey: string;

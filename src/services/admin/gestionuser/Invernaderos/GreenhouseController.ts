@@ -1,10 +1,5 @@
 import axios from 'axios';
-import { 
-  AddGreenhouseRequest, 
-  PatchGreenhouseRequest, 
-  GetGreenhouseDto, 
-  SensorReadingDto 
-} from '../../../../types/admin/greenhouse/greenhouse';
+import { AddGreenhouseRequest,PatchGreenhouseRequest,GetGreenhouseDto,SensorReadingDto } from '../../../../types/admin/greenhouse/greenhouse';
 
 
 const API_BASE_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/Greenhouse'; 
@@ -45,7 +40,7 @@ export const getGreenhousesByUser = async (): Promise<GetGreenhouseDto[]> => {
     return response.data;
   } catch (error) {
     handleError(error);
-    return []; // Retorno para satisfacer el tipo en caso de error
+    return []; 
   }
 };
 

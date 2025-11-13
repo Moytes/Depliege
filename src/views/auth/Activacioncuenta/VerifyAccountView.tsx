@@ -10,7 +10,6 @@ const { Title, Text } = Typography;
 
 export const VerifyAccountView: React.FC = () => {
     const screens = useBreakpoint();
-    const { message } = App.useApp(); 
     const navigate = useNavigate();
     
     const { form, loading, resendLoading, onFinish, onResendCode } = useVerifyAccountForm();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Row, Col, Image, Space, Grid, Flex } from 'antd';
 import { InstagramOutlined, LinkedinOutlined, FacebookOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
-import { theme, hexToRgba } from '../../../../theme/landing/invernadero/theme';
+import { theme } from '../../../../theme/landing/invernadero/theme';
 
 const { Title, Link, Text } = Typography;
 

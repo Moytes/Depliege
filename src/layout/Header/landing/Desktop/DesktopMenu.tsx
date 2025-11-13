@@ -1,11 +1,6 @@
 import React from 'react';
 import {  Button, Flex } from 'antd';
-import { 
-    UserAddOutlined, 
-    LoginOutlined, 
-    HomeOutlined, 
-    TeamOutlined
-} from '@ant-design/icons';
+import { UserAddOutlined, LoginOutlined,HomeOutlined,TeamOutlined} from '@ant-design/icons';
 import { theme, hexToRgba } from '../../../../theme/landing/invernadero/theme';
 
 interface DesktopMenuProps {

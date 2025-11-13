@@ -23,7 +23,7 @@ const getDarkerShade = (hexColor: string) => {
 export const SensorStatistic: React.FC<SensorStatisticProps> = ({ icon, title, value, unit, color, trend }) => {
     const isPositive = trend >= 0;
     const gradientEndColor = getDarkerShade(color);
-    const displayValue = value != null ? value.toFixed(1) : 'N/A'; // Chequeo para undefined/null
+    const displayValue = value != null ? value.toFixed(1) : 'N/A'; 
 
     return (
         <Card style={{

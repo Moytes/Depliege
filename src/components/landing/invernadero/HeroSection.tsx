@@ -1,14 +1,6 @@
 import React from 'react';
 import { Card, Typography, Button, Row, Col, Space, Progress, Grid } from 'antd';
-import { 
-  RocketOutlined, 
-  EnvironmentOutlined, 
-  ExperimentOutlined, 
-  ControlOutlined,
-  AlertOutlined,
-  PlayCircleOutlined,
-  FileTextOutlined
-} from '@ant-design/icons';
+import { RocketOutlined, EnvironmentOutlined, ExperimentOutlined, ControlOutlined,AlertOutlined,PlayCircleOutlined,FileTextOutlined} from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom'; 
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
 import { useScrollAnimation } from '../../../hook/landing/invernadero/Hero/useScrollAnimation';

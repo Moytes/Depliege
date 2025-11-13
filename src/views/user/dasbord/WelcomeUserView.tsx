@@ -1,11 +1,6 @@
 import React from 'react';
 import { Card, Col, Row, Typography, Avatar, Space } from 'antd';
-import {
-    LineChartOutlined,
-    ExperimentOutlined,
-    SettingOutlined,
-    UserOutlined
-} from '@ant-design/icons';
+import { LineChartOutlined,ExperimentOutlined,SettingOutlined,UserOutlined} from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 
