@@ -10,7 +10,7 @@ const { Title, Text, Link } = Typography;
 interface RegisterViewProps {
     onBackToLogin: () => void;
 }
-
+// Register View Component
 export const RegisterView: React.FC<RegisterViewProps> = ({ onBackToLogin }) => {
     const screens = useBreakpoint();
     const { form, loading, onFinish } = useRegisterForm();
