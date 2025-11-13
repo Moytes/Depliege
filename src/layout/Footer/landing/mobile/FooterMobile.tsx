@@ -139,7 +139,7 @@ export const FooterMobile: React.FC<FooterContentProps> = ({ screens }) => {
               <br />
               Av. Pie de la Cuesta 2501, Nacional,
               <br />
-              76148 Santiago de Querétaro, QRO.
+              76148 Santiago de Querétaro, Qro.
             </Text>
           </Flex>
 
