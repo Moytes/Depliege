@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Card, Typography, Flex, Grid, ConfigProvider, Input, App } from 'antd';
+import { Form, Button, Card, Typography, Flex, Grid, ConfigProvider, Input } from 'antd';
 import { ArrowLeftOutlined, CheckCircleOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { theme, hexToRgba } from '../../../theme/landing/invernadero/theme';
