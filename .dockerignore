@@ -1,0 +1,2 @@
+# Ignore all files in the node_modules directory para que funcion en toda las versions de npm en otros dispositivos
+node_modules

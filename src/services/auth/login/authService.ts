@@ -1,0 +1,48 @@
+import axios from 'axios';
+import { LoginUserData, LoginResponse, DecodedToken } from '../../../types/auth/login/auth';
+
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+console.log("AuthService: Valor de REACT_APP_API_URL (al cargar):", API_BASE_URL);
+
+const isValidHttpUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  return url.startsWith('http://') || url.startsWith('https://');
+};
+
+const LOGIN_API_URL = `${API_BASE_URL}/api/User/Login`;
+
+export const loginUser = async (userData: LoginUserData): Promise<LoginResponse> => {
+
+  console.log("AuthService: Intentando POST a la ruta:", LOGIN_API_URL);
+
+  if (!isValidHttpUrl(API_BASE_URL)) {
+    console.error("AuthService: Error FATAL: La URL base no es válida o no está configurada.");
+    console.error("AuthService: El valor de API_BASE_URL es:", API_BASE_URL);
+    throw new Error("Error de configuración: La URL del servidor no es válida.");
+  }
+
+  const response = await axios.post<LoginResponse>(LOGIN_API_URL, userData);
+  return response.data;
+};
+
+
+export const saveToken = (token: string): void => {
+  localStorage.setItem('authToken', token);
+};
+
+
+export const logoutUser = (): void => {
+  localStorage.removeItem('authToken');
+};
+
+export const decodeToken = (token: string): DecodedToken | null => {
+  try {
+    const payloadBase64 = token.split('.')[1];
+    const decodedPayload = atob(payloadBase64);
+    return JSON.parse(decodedPayload);
+  } catch (error) {
+    console.error("Error al decodificar el token:", error);
+    return null;
+  }
+};
