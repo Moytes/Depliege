@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { GetUsersDTO } from '../../../types/admin/gestionuser/index';
+import { GetUsersDto } from '../../../types/admin/user/userTypes'; // Usa tipos consistentes de userTypes.ts (role: number)
 
-const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'; // Consistente con otros servicios
 
 const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -27,8 +27,13 @@ apiClient.interceptors.response.use(
 );
 
 export const userService = {
-  getUsers: async (): Promise<GetUsersDTO[]> => {
-    const { data } = await apiClient.get<GetUsersDTO[]>('/GetUsers');
-    return data;
+  getUsers: async (): Promise<GetUsersDto[]> => {
+    try {
+      const { data } = await apiClient.get<GetUsersDto[]>('/api/User/GetUsers');
+      return data;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      throw error; // O retorna [] si prefieres un fallback silencioso
+    }
   },
 };

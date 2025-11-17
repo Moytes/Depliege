@@ -9,26 +9,12 @@ import {
     ResendCodeRequest
 } from '../../../types/admin/user/userTypes';
 
-const API_BASE_URL = '/api/User';
+const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User';
 
-const apiClient = axios.create({
-    baseURL: API_BASE_URL
-});
-
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('authToken');
-        
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
+const getAuthHeaders = () => {
+    const token = localStorage.getItem('authToken');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 const handleError = (error: unknown) => {
   if (axios.isAxiosError(error) && error.response) {
@@ -52,7 +38,6 @@ const handleError = (error: unknown) => {
   throw new Error('Ocurrió un error inesperado en la solicitud.');
 };
 
-
 export async function sha256(message: string): Promise<string> {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -63,14 +48,13 @@ export async function sha256(message: string): Promise<string> {
 
 export const getUsers = async (): Promise<GetUsersDto[]> => {
     try {
-        const response = await apiClient.get<GetUsersDto[]>('/GetUsers');
+        const response = await axios.get<GetUsersDto[]>(`${API_URL}/GetUsers`, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
-        return []; // Retorno para satisfacer el tipo en caso de error
+        return [];
     }
 };
-
 
 export const createUser = async (userData: Omit<AddUserRequest, 'password'> & { rawPassword: string }): Promise<any> => {
     try {
@@ -81,7 +65,7 @@ export const createUser = async (userData: Omit<AddUserRequest, 'password'> & { 
             role: userData.role,
             password: hashedPassword,
         };
-        const response = await apiClient.post('/CreateUser', requestData);
+        const response = await axios.post(`${API_URL}/CreateUser`, requestData, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -91,7 +75,7 @@ export const createUser = async (userData: Omit<AddUserRequest, 'password'> & { 
 
 export const deleteUser = async (id: string): Promise<any> => {
     try {
-        const response = await apiClient.delete(`/DeleteUser/${id}`);
+        const response = await axios.delete(`${API_URL}/DeleteUser/${id}`, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -99,10 +83,9 @@ export const deleteUser = async (id: string): Promise<any> => {
     }
 };
 
-
 export const getUserById = async (id: string): Promise<GetUserDto> => {
     try {
-        const response = await apiClient.get<GetUserDto>(`/GetUserById/${id}`);
+        const response = await axios.get<GetUserDto>(`${API_URL}/GetUserById/${id}`, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -112,7 +95,7 @@ export const getUserById = async (id: string): Promise<GetUserDto> => {
 
 export const patchUser = async (id: string, userData: PatchUserRequest): Promise<any> => {
     try {
-        const response = await apiClient.patch(`/PatchUser/${id}`, userData);
+        const response = await axios.patch(`${API_URL}/PatchUser/${id}`, userData, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -120,10 +103,8 @@ export const patchUser = async (id: string, userData: PatchUserRequest): Promise
     }
 };
 
-
 export const changePassword = async (id: string, passData: { current: string, new: string, confirm: string }): Promise<any> => {
     try {
-        // Hasheamos todas las contraseñas
         const [hashedCurrent, hashedNew, hashedConfirm] = await Promise.all([
             sha256(passData.current),
             sha256(passData.new),
@@ -136,18 +117,17 @@ export const changePassword = async (id: string, passData: { current: string, ne
             confirmNewPassword: hashedConfirm,
         };
         
-        const response = await apiClient.patch(`/ChangePassword/${id}`, requestData);
+        const response = await axios.patch(`${API_URL}/ChangePassword/${id}`, requestData, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
         throw error;
     }
 };
-
 
 export const verifyUserAccount = async (verifyData: VerifyUserRequest): Promise<any> => {
     try {
-        const response = await apiClient.post('/VerifyUserAccount', verifyData);
+        const response = await axios.post(`${API_URL}/VerifyUserAccount`, verifyData, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);
@@ -155,10 +135,9 @@ export const verifyUserAccount = async (verifyData: VerifyUserRequest): Promise<
     }
 };
 
-
 export const resendVerificationCode = async (resendData: ResendCodeRequest): Promise<any> => {
     try {
-        const response = await apiClient.post('/ResendVerificationCode', resendData);
+        const response = await axios.post(`${API_URL}/ResendVerificationCode`, resendData, { headers: getAuthHeaders() });
         return response.data;
     } catch (error) {
         handleError(error);

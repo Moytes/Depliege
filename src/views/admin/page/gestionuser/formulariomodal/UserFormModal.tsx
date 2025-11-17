@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, Alert } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, CrownOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { UserTableData } from '../../../../../types/admin/gestionuser/index';
+import { Roles } from '../../../../../types/admin/user/userTypes'; // Importa Roles para consistencia
 
 const { Option } = Select;
 
@@ -37,6 +38,11 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
 
   const handleOk = () => {
     form.submit();
+  };
+
+  // Función auxiliar para mapear número de rol a string legible
+  const getRolDisplay = (rol: number): string => {
+    return rol === Roles.Administrador ? 'Administrador' : 'Usuario';
   };
 
   return (
@@ -98,8 +104,8 @@ export const UserFormModal: React.FC<UserFormModalProps> = ({
           <Select placeholder="Rol del usuario" disabled>
             {editingUser && (
               <Option value={editingUser.rol}>
-                {editingUser.rol}{' '}
-                {editingUser.rol.toLowerCase().includes('admin') && (
+                {getRolDisplay(editingUser.rol)}{' '}
+                {editingUser.rol === Roles.Administrador && (
                   <CrownOutlined />
                 )}
               </Option>

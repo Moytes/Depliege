@@ -1,13 +1,13 @@
 import React from 'react';
 import { App } from 'antd';
-import { GetUsersDTO } from '../../../../../types/admin/gestionuser/index';
-import { userService } from '../../../../../services/admin/gestionuser/userService';
+import { GetUsersDto } from '../../../../../types/admin/user/userTypes'; // Usa tipos consistentes (role: number)
+import { getUsers } from '../../../../../services/admin/user/userAdminService'; // Cambia a userAdminService para estandarizar; elimina userService si no se usa
 
 export interface UserTableData {
   key: string;
   nombre: string;
   correo: string;
-  rol: string;
+  rol: number; // number
 }
 
 export const useUserManagement = () => {
@@ -18,13 +18,13 @@ export const useUserManagement = () => {
   const fetchUsers = React.useCallback(async () => {
     setLoading(true);
     try {
-      const usersFromApi = await userService.getUsers();
+      const usersFromApi = await getUsers(); // Ahora usa el servicio estandarizado
       const mappedUsers: UserTableData[] = usersFromApi.map(
-        (user: GetUsersDTO) => ({
+        (user: GetUsersDto) => ({
           key: user.id,
           nombre: user.userName,
           correo: user.mail,
-          rol: user.role,
+          rol: user.role, // number
         })
       );
 
