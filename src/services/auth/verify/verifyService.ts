@@ -1,7 +1,16 @@
 import axios from 'axios';
 import { VerifyAccountData, ResendCodeData } from '../../../types/auth/registro/verify/auth';
 
-const API_URL = 'https://api-scci.happyglacier-792390d3.westus2.azurecontainerapps.io/api/User';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
+console.log("VerifyService: Valor de REACT_APP_API_URL:", API_BASE_URL);
+
+const isValidHttpUrl = (url: string | undefined): boolean => {
+  if (!url) return false;
+  return url.startsWith('http://') || url.startsWith('https://');
+};
+
+const USER_API_URL = `${API_BASE_URL}/api/User`;
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('authToken');
@@ -19,9 +28,14 @@ const getAuthHeaders = () => {
 };
 
 export const verifyUserAccount = async (data: VerifyAccountData) => {
+    if (!isValidHttpUrl(API_BASE_URL)) {
+        console.error("VerifyService: Error FATAL: La URL base no es válida o no está configurada.");
+        throw new Error("Error de configuración: La URL del servidor no es válida.");
+    }
+
     try {
         const response = await axios.post(
-            `${API_URL}/VerifyUserAccount`, 
+            `${USER_API_URL}/VerifyUserAccount`, 
             data, 
             getAuthHeaders() 
         );
@@ -35,9 +49,14 @@ export const verifyUserAccount = async (data: VerifyAccountData) => {
 };
 
 export const resendVerificationCode = async (data: ResendCodeData) => {
+    if (!isValidHttpUrl(API_BASE_URL)) {
+        console.error("VerifyService: Error FATAL: La URL base no es válida o no está configurada.");
+        throw new Error("Error de configuración: La URL del servidor no es válida.");
+    }
+
     try {
         const response = await axios.post(
-            `${API_URL}/ResendVerificationCode`, 
+            `${USER_API_URL}/ResendVerificationCode`, 
             data, 
             getAuthHeaders()
         );

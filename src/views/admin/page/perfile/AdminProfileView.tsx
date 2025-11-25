@@ -1,128 +1,215 @@
-import React, { useState } from 'react';
-import {Card,Row,Col,Avatar,Typography,Button,Modal,Form,Input,message,Divider,Space} from 'antd';
-import { UserOutlined, EditOutlined, LockOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Avatar, Typography, Button, Modal, Form, Input, Divider, Space, Skeleton, Tag, Grid } from 'antd';
+import { UserOutlined, EditOutlined, LockOutlined, MailOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { useAdminProfile } from '../../../../hook/admin/perfile/useAdminProfile';
 
 const { Title, Text } = Typography;
-
-const userData = {
-    name: 'Moisés Godínez',
-    email: 'admin@uteq.edu.mx',
-    avatarUrl: 'https://randomuser.me/api/portraits/men/75.jpg',
-};
-
+const { useBreakpoint } = Grid;
 
 export const AdminProfileView: React.FC = () => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [form] = Form.useForm();
+    const screens = useBreakpoint();
+    
+    const { user, loading, handleChangePassword, handleUpdateInfo } = useAdminProfile();
 
-    const showModal = () => {
-        setIsModalVisible(true);
+    const [isPassModalVisible, setIsPassModalVisible] = useState(false);
+    const [isInfoModalVisible, setIsInfoModalVisible] = useState(false);
+    const [passForm] = Form.useForm();
+    const [infoForm] = Form.useForm();
+
+    useEffect(() => {
+        if (user && isInfoModalVisible) {
+            infoForm.setFieldsValue({
+                userName: user.userName,
+                mail: user.mail
+            });
+        }
+    }, [user, isInfoModalVisible, infoForm]);
+
+    const onFinishPassword = async (values: any) => {
+        const success = await handleChangePassword(values.currentPassword, values.newPassword);
+        if (success) {
+            setIsPassModalVisible(false);
+            passForm.resetFields();
+        }
     };
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-        form.resetFields();
+    const onFinishInfo = async (values: any) => {
+        const success = await handleUpdateInfo(values);
+        if (success) {
+            setIsInfoModalVisible(false);
+        }
     };
 
-    const onFinish = (values: any) => {
-        console.log('Valores del formulario:', values);
-        message.success('¡Contraseña actualizada correctamente!');
-        handleCancel();
-    };
+    if (loading && !user) {
+        return <Card bordered={false}><Skeleton avatar active paragraph={{ rows: 4 }} /></Card>;
+    }
 
     return (
-        <>
-            <Card title="Perfil de Administrador" bordered={false}>
+        <div style={{ padding: screens.md ? '24px' : '12px', maxWidth: '1000px', margin: '0 auto' }}>
+            <Card 
+                title="Mi Perfil" 
+                bordered={false} 
+                style={{ 
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                    borderRadius: '8px'
+                }}
+                bodyStyle={{ padding: screens.md ? '24px' : '16px' }}
+            >
                 <Row gutter={[24, 24]} align="middle">
-                    <Col xs={24} md={6} style={{ textAlign: 'center' }}>
+                    <Col xs={24} md={8} style={{ textAlign: 'center' }}>
                         <Avatar
-                            size={{ xs: 80, sm: 100, md: 120, lg: 140, xl: 160 }}
+                            size={screens.md ? 120 : 100}
                             icon={<UserOutlined />}
-                            src={userData.avatarUrl} 
+                            style={{ backgroundColor: '#1890ff' }}
                         />
+                        <div style={{ marginTop: 16 }}>
+                            <Tag 
+                                color="gold" 
+                                icon={<SafetyCertificateOutlined />} 
+                                style={{ fontSize: '14px', padding: '4px 10px' }}
+                            >
+                                {user?.role === 1 ? 'Administrador' : 'Usuario'}
+                            </Tag>
+                        </div>
                     </Col>
 
-                    <Col xs={24} md={18}>
+                    <Col xs={24} md={16} style={{ textAlign: screens.md ? 'left' : 'center' }}>
                         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                             <div>
-                                <Title level={3} style={{ marginBottom: 0 }}>
-                                    {userData.name}
+                                <Text type="secondary">Nombre de Usuario</Text>
+                                <Title level={screens.md ? 4 : 5} style={{ margin: 0 }}>
+                                    {user?.userName || 'Usuario'}
                                 </Title>
-                                <Text type="secondary">{userData.email}</Text>
                             </div>
-                            <Divider />
-                            <Button
-                                type="primary"
-                                icon={<EditOutlined />}
-                                onClick={showModal}
+
+                            <div>
+                                <Text type="secondary">Correo Electrónico</Text>
+                                <div style={{ fontSize: screens.md ? '16px' : '15px', wordBreak: 'break-all' }}>
+                                    {user?.mail || 'correo@ejemplo.com'}
+                                </div>
+                            </div>
+
+                            <Divider style={{ margin: '12px 0' }} />
+
+                            <Space 
+                                wrap 
+                                style={{ width: '100%', justifyContent: screens.md ? 'flex-start' : 'center' }}
+                                size={screens.md ? 'middle' : 'small'}
                             >
-                                Cambiar Contraseña
-                            </Button>
+                                <Button
+                                    icon={<EditOutlined />}
+                                    onClick={() => setIsInfoModalVisible(true)}
+                                    size={screens.md ? 'middle' : 'large'}
+                                >
+                                    Editar Datos
+                                </Button>
+
+                                <Button
+                                    type="primary"
+                                    icon={<LockOutlined />}
+                                    onClick={() => setIsPassModalVisible(true)}
+                                    size={screens.md ? 'middle' : 'large'}
+                                >
+                                    Cambiar Contraseña
+                                </Button>
+                            </Space>
                         </Space>
                     </Col>
                 </Row>
             </Card>
 
             <Modal
-                title="Cambiar Contraseña"
-                open={isModalVisible}
-                onCancel={handleCancel}
+                title="Editar Información Personal"
+                open={isInfoModalVisible}
+                onCancel={() => setIsInfoModalVisible(false)}
                 footer={null}
                 destroyOnClose
+                width={screens.xs ? '100%' : 520}
+                style={{ top: screens.xs ? 10 : 100, maxWidth: 'calc(100% - 20px)', margin: '0 auto' }}
             >
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={onFinish}
-                    style={{ marginTop: '24px' }}
-                >
+                <Form form={infoForm} layout="vertical" onFinish={onFinishInfo}>
+                    <Form.Item
+                        name="userName"
+                        label="Nombre de Usuario"
+                        rules={[{ required: true, message: 'El nombre es obligatorio' }, { min: 4, max: 25, message: 'Entre 4 y 25 caracteres' }]}
+                    >
+                        <Input prefix={<UserOutlined />} placeholder="Nuevo nombre de usuario" size="large" />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="mail"
+                        label="Correo Electrónico"
+                        rules={[{ required: true, message: 'El correo es obligatorio' }, { type: 'email', message: 'Correo inválido' }]}
+                    >
+                        <Input prefix={<MailOutlined />} placeholder="Nuevo correo electrónico" size="large" />
+                    </Form.Item>
+
+                    <Form.Item style={{ textAlign: 'right', marginTop: 24 }}>
+                        <Space>
+                            <Button onClick={() => setIsInfoModalVisible(false)}>Cancelar</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>
+                                Guardar Cambios
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            <Modal
+                title="Seguridad de la Cuenta"
+                open={isPassModalVisible}
+                onCancel={() => { setIsPassModalVisible(false); passForm.resetFields(); }}
+                footer={null}
+                destroyOnClose
+                width={screens.xs ? '100%' : 520}
+                style={{ top: screens.xs ? 10 : 100, maxWidth: 'calc(100% - 20px)', margin: '0 auto' }}
+            >
+                <Form form={passForm} layout="vertical" onFinish={onFinishPassword}>
                     <Form.Item
                         name="currentPassword"
                         label="Contraseña Actual"
-                        rules={[{ required: true, message: 'Por favor, ingresa tu contraseña actual.' }]}
+                        rules={[{ required: true, message: 'Requerida para autorizar el cambio' }]}
                     >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Contraseña actual" />
+                        <Input.Password prefix={<LockOutlined />} placeholder="Ingresa tu contraseña actual" size="large" />
                     </Form.Item>
 
                     <Form.Item
                         name="newPassword"
                         label="Nueva Contraseña"
-                        rules={[{ required: true, message: 'Por favor, ingresa la nueva contraseña.' }]}
-                        hasFeedback
+                        rules={[{ required: true, message: 'Ingresa la nueva contraseña' }, { min: 8, message: 'Mínimo 8 caracteres' }]}
                     >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Nueva contraseña" />
+                        <Input.Password prefix={<LockOutlined />} placeholder="Nueva contraseña" size="large" />
                     </Form.Item>
 
                     <Form.Item
                         name="confirmPassword"
-                        label="Confirmar Nueva Contraseña"
+                        label="Confirmar Contraseña"
                         dependencies={['newPassword']}
-                        hasFeedback
                         rules={[
-                            { required: true, message: 'Por favor, confirma la nueva contraseña.' },
+                            { required: true, message: 'Confirma tu contraseña' },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
                                     if (!value || getFieldValue('newPassword') === value) {
                                         return Promise.resolve();
                                     }
-                                    return Promise.reject(new Error('¡Las contraseñas no coinciden!'));
+                                    return Promise.reject(new Error('Las contraseñas no coinciden'));
                                 },
                             }),
                         ]}
                     >
-                        <Input.Password prefix={<LockOutlined />} placeholder="Confirmar contraseña" />
+                        <Input.Password prefix={<LockOutlined />} placeholder="Repite la nueva contraseña" size="large" />
                     </Form.Item>
 
-                    <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
-                        <Button onClick={handleCancel} style={{ marginRight: 8 }}>
-                            Cancelar
-                        </Button>
-                        <Button type="primary" htmlType="submit">
-                            Actualizar
-                        </Button>
+                    <Form.Item style={{ textAlign: 'right', marginTop: 24 }}>
+                        <Space>
+                            <Button onClick={() => setIsPassModalVisible(false)}>Cancelar</Button>
+                            <Button type="primary" htmlType="submit" loading={loading}>
+                                Actualizar Contraseña
+                            </Button>
+                        </Space>
                     </Form.Item>
                 </Form>
             </Modal>
-        </>
+        </div>
     );
 };

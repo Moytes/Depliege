@@ -2,14 +2,14 @@ export interface GetUsersDTO {
   id: string;
   mail: string;
   userName: string;
-  role: number; // Cambiado a number para consistencia con backend y userTypes.ts
+  role: number; 
 }
 
 export interface UserTableData {
   key: string;
   nombre: string;
   correo: string;
-  rol: number; // Cambiado a number
+  rol: number; 
   id: string;
 }
 

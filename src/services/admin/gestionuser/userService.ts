@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { GetUsersDto } from '../../../types/admin/user/userTypes'; // Usa tipos consistentes de userTypes.ts (role: number)
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'; // Consistente con otros servicios
+import { GetUsersDto } from '../../../types/admin/user/userTypes'; 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000'; 
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -33,7 +32,7 @@ export const userService = {
       return data;
     } catch (error) {
       console.error('Error fetching users:', error);
-      throw error; // O retorna [] si prefieres un fallback silencioso
+      throw error; 
     }
   },
 };

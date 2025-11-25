@@ -1,130 +1,123 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select, Alert } from 'antd';
-import { UserOutlined, MailOutlined, LockOutlined, CrownOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { UserTableData } from '../../../../../types/admin/gestionuser/index';
-import { Roles } from '../../../../../types/admin/user/userTypes'; // Importa Roles para consistencia
+import { Modal, Form, Input, Select, Alert, Divider } from 'antd';
+import { UserOutlined, MailOutlined, LockOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
+import { UserTableData, Roles } from '../../../../../types/admin/user/userTypes';
 
 const { Option } = Select;
 
 interface UserFormModalProps {
-  open: boolean;
-  onCancel: () => void;
-  onFinish: (values: any) => void;
-  editingUser: UserTableData | null;
-  isSubmitting: boolean;
+    open: boolean;
+    onCancel: () => void;
+    onSubmit: (values: any) => Promise<boolean>; 
+    editingUser: UserTableData | null;
+    loading: boolean;
 }
 
 export const UserFormModal: React.FC<UserFormModalProps> = ({
-  open,
-  onCancel,
-  onFinish,
-  editingUser,
-  isSubmitting,
+    open,
+    onCancel,
+    onSubmit,
+    editingUser,
+    loading,
 }) => {
-  const [form] = Form.useForm();
+    const [form] = Form.useForm();
+    const isEditMode = !!editingUser;
 
-  useEffect(() => {
-    if (editingUser) {
-      form.setFieldsValue({
-        nombre: editingUser.nombre,
-        correo: editingUser.correo,
-        rol: editingUser.rol, 
-        password: '', 
-      });
-    } else {
-      form.resetFields();
-    }
-  }, [editingUser, open, form]);
+    useEffect(() => {
+        if (open) {
+            form.resetFields();
+            if (editingUser) {
+                form.setFieldsValue({
+                    userName: editingUser.nombre,
+                    mail: editingUser.correo,
+                    role: editingUser.rol
+                });
+            }
+        }
+    }, [open, editingUser, form]);
 
-  const handleOk = () => {
-    form.submit();
-  };
+    const handleFinish = async (values: any) => {
+        const success = await onSubmit(values);
+        if (success) {
+            onCancel();
+        }
+    };
 
-  // Función auxiliar para mapear número de rol a string legible
-  const getRolDisplay = (rol: number): string => {
-    return rol === Roles.Administrador ? 'Administrador' : 'Usuario';
-  };
-
-  return (
-    <Modal
-      title="Editar Usuario"
-      open={open}
-      onCancel={onCancel}
-      onOk={handleOk} 
-      confirmLoading={isSubmitting} 
-      destroyOnClose 
-      width={600}
-    >
-      <Alert
-        message="Funcionalidad Limitada por el Backend"
-        description="Solo se guardarán los cambios en 'Nombre de Usuario' y 'Correo Electrónico'. El cambio de Rol y Contraseña no están soportados por el API actual."
-        type="warning"
-        showIcon
-        icon={<InfoCircleOutlined />}
-        style={{ marginBottom: 24 }}
-      />
-
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish} 
-        autoComplete="off"
-      >
-        <Form.Item
-          name="nombre"
-          label="Nombre de Usuario"
-          rules={[
-            { required: true, message: 'El nombre es obligatorio' },
-            { min: 4, max: 25, message: 'Debe tener entre 4 y 25 caracteres' },
-          ]}
+    return (
+        <Modal
+            title={isEditMode ? "Editar Información de Usuario" : "Registrar Nuevo Usuario"}
+            open={open}
+            onCancel={onCancel}
+            onOk={form.submit}
+            confirmLoading={loading}
+            destroyOnClose
         >
-          <Input
-            prefix={<UserOutlined />}
-            placeholder="Ej: jperez"
-            disabled={isSubmitting}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="correo"
-          label="Correo Electrónico"
-          rules={[
-            { required: true, message: 'El correo es obligatorio' },
-            { type: 'email', message: 'El correo no es válido' },
-          ]}
-        >
-          <Input
-            prefix={<MailOutlined />}
-            placeholder="Ej: juan.perez@example.com"
-            disabled={isSubmitting}
-          />
-        </Form.Item>
-
-        <Form.Item name="rol" label="Rol (No editable)">
-          <Select placeholder="Rol del usuario" disabled>
-            {editingUser && (
-              <Option value={editingUser.rol}>
-                {getRolDisplay(editingUser.rol)}{' '}
-                {editingUser.rol === Roles.Administrador && (
-                  <CrownOutlined />
-                )}
-              </Option>
+            {isEditMode && (
+                <Alert 
+                    message="Modo Edición Restringido" 
+                    description="Solo puede modificar el Nombre y el Correo. Para cambiar contraseña, el usuario debe hacerlo desde su perfil. Para cambiar rol, inactive y cree uno nuevo." 
+                    type="info" 
+                    showIcon 
+                    style={{ marginBottom: 20 }} 
+                />
             )}
-          </Select>
-        </Form.Item>
 
-        <Form.Item
-          name="password"
-          label="Resetear Contraseña (No editable)"
-          help="El backend no permite al admin resetear contraseñas."
-        >
-          <Input.Password
-            prefix={<LockOutlined />}
-            placeholder="Funcionalidad no disponible"
-            disabled
-          />
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
+            <Form form={form} layout="vertical" onFinish={handleFinish}>
+                
+                <Form.Item
+                    name="userName"
+                    label="Nombre de Usuario"
+                    rules={[{ required: true, message: 'Ingrese el nombre de usuario' }, { min: 4, max: 25, message: 'Entre 4 y 25 caracteres' }]}
+                >
+                    <Input prefix={<UserOutlined />} placeholder="Ej. JuanPerez" />
+                </Form.Item>
+
+                <Form.Item
+                    name="mail"
+                    label="Correo Electrónico"
+                    rules={[{ required: true, message: 'Ingrese el correo' }, { type: 'email', message: 'Correo inválido' }]}
+                >
+                    <Input prefix={<MailOutlined />} placeholder="usuario@ejemplo.com" />
+                </Form.Item>
+
+                {!isEditMode && (
+                    <>
+                        <Divider dashed />
+                        <Form.Item
+                            name="password"
+                            label="Contraseña Inicial"
+                            rules={[
+                                { required: true, message: 'La contraseña es obligatoria al crear' },
+                                { min: 8, message: 'Mínimo 8 caracteres' }
+                            ]}
+                        >
+                            <Input.Password prefix={<LockOutlined />} placeholder="Ingrese contraseña segura" />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="role"
+                            label="Asignar Rol"
+                            initialValue={Roles.User}
+                            rules={[{ required: true }]}
+                        >
+                            <Select>
+                                <Option value={Roles.Administrador}><SafetyCertificateOutlined /> Administrador</Option>
+                                <Option value={Roles.User}><UserOutlined /> Usuario Estándar</Option>
+                            </Select>
+                        </Form.Item>
+                    </>
+                )}
+
+                {isEditMode && (
+                    <Form.Item label="Rol Actual">
+                        <Select disabled value={editingUser.rol}>
+                             <Option value={Roles.Administrador}>Administrador</Option>
+                             <Option value={Roles.User}>Usuario</Option>
+                        </Select>
+                    </Form.Item>
+                )}
+
+            </Form>
+        </Modal>
+    );
 };
