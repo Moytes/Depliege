@@ -157,26 +157,26 @@ export const GestionInvernaderoCalidoView: FC = () => {
         ) : (
           <>
             <Grid2 container spacing={2}>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Temperatura Promedio" value={`${avgTemp.toFixed(2)} °C`} change={changeTemp} trend={changeTemp > 0 ? 'up' : 'down'} />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Humedad Promedio" value={`${avgHum.toFixed(2)} %`} change={changeHum} trend={changeHum > 0 ? 'up' : 'down'} />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Luminosidad Promedio" value={`${avgLum.toFixed(2)} lux`} change={changeLum} trend={changeLum > 0 ? 'up' : 'down'} />
               </Grid2>
             </Grid2>
             <Grid2 container spacing={2} sx={{ mt: 4 }}>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Temperatura</Typography>
                 <SimpleLineChart data={periodData} field="temp_c" label="Temperatura (°C)" color="#e91e63" />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Humedad</Typography>
                 <SimpleLineChart data={periodData} field="hum_c" label="Humedad (%)" color="#2196f3" />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Luminosidad</Typography>
                 <SimpleLineChart data={periodData} field="lum_c" label="Luminosidad (lux)" color="#ffeb3b" />
               </Grid2>
@@ -192,13 +192,13 @@ export const GestionInvernaderoCalidoView: FC = () => {
       <Typography variant="h5" gutterBottom>Datos en Tiempo Real (Actualización cada 10s)</Typography>
       <Divider sx={{ mb: 2 }} />
       <Grid2 container spacing={2}>
-        <Grid2 size={{ xs: 12, md: 4 }}>
+        <Grid2 xs={12} md={4}>
           <KPICard title="Temperatura Actual" value={isNaN(latest.temp_c) ? 'N/A' : `${latest.temp_c.toFixed(2)} °C`} />
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 4 }}>
+        <Grid2 xs={12} md={4}>
           <KPICard title="Humedad Actual" value={isNaN(latest.hum_c) ? 'N/A' : `${latest.hum_c.toFixed(2)} %`} />
         </Grid2>
-        <Grid2 size={{ xs: 12, md: 4 }}>
+        <Grid2 xs={12} md={4}>
           <KPICard title="Luminosidad Actual" value={isNaN(latest.lum_c) ? 'N/A' : `${latest.lum_c.toFixed(2)} lux`} />
         </Grid2>
       </Grid2>
@@ -231,7 +231,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
         <Divider sx={{ mb: 2 }} />
 
         <Grid2 container spacing={2} sx={{ mb: 3 }} alignItems="center">
-          <Grid2 size={{ xs: 12, sm: 6, md: 5 }}>
+          <Grid2 xs={12} sm={6} md={5}>
             <TextField
               label="Fecha/Hora de Inicio"
               type="datetime-local"
@@ -241,7 +241,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6, md: 5 }}>
+          <Grid2 xs={12} sm={6} md={5}>
             <TextField
               label="Fecha/Hora de Fin"
               type="datetime-local"
@@ -251,7 +251,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
               InputLabelProps={{ shrink: true }}
             />
           </Grid2>
-          <Grid2 size={{ xs: 12, md: 2 }}>
+          <Grid2 xs={12} md={2}>
             <Button variant="contained" fullWidth disabled={!startDate || !endDate} sx={{ height: '56px' }}> 
               Aplicar Rango
             </Button>
@@ -268,27 +268,27 @@ export const GestionInvernaderoCalidoView: FC = () => {
         {customData.length > 0 && (
           <>
             <Grid2 container spacing={2}>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Temperatura Promedio" value={`${avgTemp.toFixed(2)} °C`} />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Humedad Promedio" value={`${avgHum.toFixed(2)} %`} />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <KPICard title="Luminosidad Promedio" value={`${avgLum.toFixed(2)} lux`} />
               </Grid2>
             </Grid2>
 
             <Grid2 container spacing={2} sx={{ mt: 4 }}>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Temperatura</Typography>
                 <SimpleLineChart data={customData} field="temp_c" label="Temperatura (°C)" color="#e91e63" />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Humedad</Typography>
                 <SimpleLineChart data={customData} field="hum_c" label="Humedad (%)" color="#2196f3" />
               </Grid2>
-              <Grid2 size={{ xs: 12, md: 4 }}>
+              <Grid2 xs={12} md={4}>
                 <Typography variant="subtitle1" gutterBottom>Tendencia de Luminosidad</Typography>
                 <SimpleLineChart data={customData} field="lum_c" label="Luminosidad (lux)" color="#ffeb3b" />
               </Grid2>
