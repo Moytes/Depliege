@@ -3,16 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Typography, Box, Button, CircularProgress, Alert, Paper, Grid as Grid2, Divider, Tabs, Tab, TextField } from '@mui/material';
 import { ArrowBack, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { getHotDataByGreenhouseId } from '../../../../services/admin/gestionuser/Invernaderos/GreenhouseController';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartTooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip as RechartTooltip,Legend,ResponsiveContainer,} from 'recharts';
 
 interface HotDataReading {
   time: string;
@@ -66,10 +57,11 @@ const SimpleLineChart: FC<{
           type="number"
           domain={['dataMin', 'dataMax']}
           tickFormatter={(unixTime) => new Date(unixTime).toLocaleTimeString()}
+          style={{ fontSize: '10px' }} 
         />
-        <YAxis />
+        <YAxis style={{ fontSize: '10px' }} /> 
         <RechartTooltip labelFormatter={(label) => new Date(label).toLocaleString()} />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: '12px' }} /> 
         <Line type="monotone" dataKey="value" stroke={color} name={label} dot={false} strokeWidth={2} />
       </LineChart>
     </ResponsiveContainer>
@@ -80,7 +72,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
   const [data, setData] = useState<HotDataReading[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0); 
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const { id } = useParams<{ id: string }>();
@@ -96,7 +88,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
       const result: HotDataReading[] = await getHotDataByGreenhouseId(id) as any;
       if (!result || result.length === 0) {
         setError("No se encontraron datos para el lado caliente de este invernadero.");
-        setData([]); 
+        setData([]);
       } else {
         const sorted = result.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
         setData(sorted);
@@ -125,22 +117,11 @@ export const GestionInvernaderoCalidoView: FC = () => {
 
   const filterData = (startTime: number) => sortedData.filter((d) => new Date(d.time).getTime() > now - startTime);
 
-  const lastHourData = filterData(3600 * 1000);
-  const previousHourData = sortedData.filter((d) => {
-    const time = new Date(d.time).getTime();
-    return time > now - 2 * 3600 * 1000 && time <= now - 3600 * 1000;
-  });
-
-  const lastDayData = filterData(24 * 3600 * 1000);
-  const previousDayData = sortedData.filter((d) => {
-    const time = new Date(d.time).getTime();
-    return time > now - 2 * 24 * 3600 * 1000 && time <= now - 24 * 3600 * 1000;
-  });
-
-  const lastMonthData = filterData(30 * 24 * 3600 * 1000);
+  const lastMonthDuration = 30 * 24 * 3600 * 1000;
+  const lastMonthData = filterData(lastMonthDuration);
   const previousMonthData = sortedData.filter((d) => {
     const time = new Date(d.time).getTime();
-    return time > now - 2 * 30 * 24 * 3600 * 1000 && time <= now - 30 * 24 * 3600 * 1000;
+    return time > now - 2 * lastMonthDuration && time <= now - lastMonthDuration;
   });
 
   const calculateAverage = (readings: HotDataReading[], field: keyof Pick<HotDataReading, 'temp_c' | 'hum_c' | 'lum_c'>) => {
@@ -237,7 +218,6 @@ export const GestionInvernaderoCalidoView: FC = () => {
       const start = new Date(startDate).getTime();
       const end = new Date(endDate).getTime();
       const time = new Date(d.time).getTime();
-
       return time >= start && time <= end;
     });
 
@@ -272,7 +252,7 @@ export const GestionInvernaderoCalidoView: FC = () => {
             />
           </Grid2>
           <Grid2 size={{ xs: 12, md: 2 }}>
-            <Button variant="contained" fullWidth disabled={!startDate || !endDate}>
+            <Button variant="contained" fullWidth disabled={!startDate || !endDate} sx={{ height: '56px' }}> 
               Aplicar Rango
             </Button>
           </Grid2>
@@ -320,12 +300,12 @@ export const GestionInvernaderoCalidoView: FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: { xs: 1, sm: 3 } }}> {/* Ajuste el padding para pantallas pequeñas */}
       <Button component={Link} to="/user/gestion-invernadero" startIcon={<ArrowBack />} sx={{ mb: 2 }}>
         Volver a la lista
       </Button>
-      <Typography variant="h4" gutterBottom>
-        Datos del Lado Caliente 
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
+        Datos del Lado Caliente
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
         Mostrando datos para el Invernadero ID: **{id}**
@@ -337,18 +317,21 @@ export const GestionInvernaderoCalidoView: FC = () => {
 
       {!loading && !error && data.length > 0 && (
         <>
-          <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} centered sx={{ borderBottom: 1, borderColor: 'divider', mt: 2 }}>
+          <Tabs
+            value={tabValue}
+            onChange={(e, v) => setTabValue(v)}
+            centered
+            sx={{ borderBottom: 1, borderColor: 'divider', mt: 2, '& .MuiTabs-flexContainer': { flexWrap: 'wrap' } }}
+            variant="scrollable" // Permite el desplazamiento en pantallas muy pequeñas
+            allowScrollButtonsMobile // Muestra botones de desplazamiento en móvil
+          >
             <Tab label="Tiempo Real" />
-            <Tab label="Última Hora" />
-            <Tab label="Último Día" />
             <Tab label="Último Mes" />
-            <Tab label="Rango Personalizado" /> 
+            <Tab label="Rango Personalizado" />
           </Tabs>
           {tabValue === 0 && renderRealTimeSection()}
-          {tabValue === 1 && renderSection('Datos de la Última Hora', lastHourData, previousHourData)}
-          {tabValue === 2 && renderSection('Datos del Último Día', lastDayData, previousDayData)}
-          {tabValue === 3 && renderSection('Datos del Último Mes', lastMonthData, previousMonthData)}
-          {tabValue === 4 && renderCustomRangeSection()} 
+          {tabValue === 1 && renderSection('Datos del Último Mes', lastMonthData, previousMonthData)}
+          {tabValue === 2 && renderCustomRangeSection()}
         </>
       )}
     </Box>

@@ -3,16 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Typography, Box, Button, CircularProgress, Alert, Paper, Grid as Grid2, Divider, Tabs, Tab, TextField } from '@mui/material';
 import { ArrowBack, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import { getColdDataByGreenhouseId } from '../../../../services/admin/gestionuser/Invernaderos/GreenhouseController';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartTooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip as RechartTooltip,Legend,ResponsiveContainer,} from 'recharts';
 
 interface ColdDataReading {
   time: string;
@@ -53,12 +44,18 @@ const SimpleLineChart: FC<{ data: ColdDataReading[]; field: keyof Pick<ColdDataR
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+      <LineChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}> 
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" type="number" domain={['dataMin', 'dataMax']} tickFormatter={(unixTime) => new Date(unixTime).toLocaleTimeString()} />
-        <YAxis />
+        <XAxis
+          dataKey="date"
+          type="number"
+          domain={['dataMin', 'dataMax']}
+          tickFormatter={(unixTime) => new Date(unixTime).toLocaleTimeString()}
+          style={{ fontSize: '10px' }} 
+        />
+        <YAxis style={{ fontSize: '10px' }} /> 
         <RechartTooltip labelFormatter={(label) => new Date(label).toLocaleString()} />
-        <Legend />
+        <Legend wrapperStyle={{ fontSize: '12px' }} /> 
         <Line type="monotone" dataKey="value" stroke={color} name={label} dot={false} strokeWidth={2} />
       </LineChart>
     </ResponsiveContainer>
@@ -70,7 +67,7 @@ export const GestionInvernaderoFrioView: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [tabValue, setTabValue] = useState(0);
-  const [startDate, setStartDate] = useState<string>(''); 
+  const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const { id } = useParams<{ id: string }>();
 
@@ -103,7 +100,7 @@ export const GestionInvernaderoFrioView: FC = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 10000); 
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, [id]);
 
@@ -114,22 +111,12 @@ export const GestionInvernaderoFrioView: FC = () => {
 
   const filterData = (startTime: number) => sortedData.filter((d) => new Date(d.time).getTime() > now - startTime);
 
-  const lastHourData = filterData(3600 * 1000);
-  const previousHourData = sortedData.filter((d) => {
-    const time = new Date(d.time).getTime();
-    return time > now - 2 * 3600 * 1000 && time <= now - 3600 * 1000;
-  });
 
-  const lastDayData = filterData(24 * 3600 * 1000);
-  const previousDayData = sortedData.filter((d) => {
-    const time = new Date(d.time).getTime();
-    return time > now - 2 * 24 * 3600 * 1000 && time <= now - 24 * 3600 * 1000;
-  });
-
-  const lastMonthData = filterData(30 * 24 * 3600 * 1000);
+  const lastMonthDuration = 30 * 24 * 3600 * 1000;
+  const lastMonthData = filterData(lastMonthDuration);
   const previousMonthData = sortedData.filter((d) => {
     const time = new Date(d.time).getTime();
-    return time > now - 2 * 30 * 24 * 3600 * 1000 && time <= now - 30 * 24 * 3600 * 1000;
+    return time > now - 2 * lastMonthDuration && time <= now - lastMonthDuration;
   });
 
   const calculateAverage = (readings: ColdDataReading[], field: keyof Pick<ColdDataReading, 'temp_f' | 'hum_f' | 'lum_f'>) => {
@@ -261,7 +248,7 @@ export const GestionInvernaderoFrioView: FC = () => {
             />
           </Grid2>
           <Grid2 size={{ xs: 12, md: 2 }}>
-            <Button variant="contained" fullWidth disabled={!startDate || !endDate}>
+            <Button variant="contained" fullWidth disabled={!startDate || !endDate} sx={{ height: { xs: 'auto', sm: '56px' } }}> 
               Aplicar Rango
             </Button>
           </Grid2>
@@ -310,11 +297,11 @@ export const GestionInvernaderoFrioView: FC = () => {
 
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: { xs: 1, sm: 3 } }}> 
       <Button component={Link} to="/user/gestion-invernadero" startIcon={<ArrowBack />} sx={{ mb: 2 }}>
         Volver a la lista
       </Button>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom sx={{ fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
         Datos del Lado Frío 🧊
       </Typography>
       <Typography variant="subtitle1" gutterBottom>
@@ -327,18 +314,21 @@ export const GestionInvernaderoFrioView: FC = () => {
 
       {!loading && !error && data.length > 0 && (
         <>
-          <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} centered sx={{ borderBottom: 1, borderColor: 'divider', mt: 2 }}>
+          <Tabs
+            value={tabValue}
+            onChange={(e, v) => setTabValue(v)}
+            centered
+            sx={{ borderBottom: 1, borderColor: 'divider', mt: 2 }}
+            variant="scrollable" 
+            allowScrollButtonsMobile 
+          >
             <Tab label="Tiempo Real" />
-            <Tab label="Última Hora" />
-            <Tab label="Último Día" />
             <Tab label="Último Mes" />
-            <Tab label="Rango Personalizado" /> 
+            <Tab label="Rango Personalizado" />
           </Tabs>
           {tabValue === 0 && renderRealTimeSection()}
-          {tabValue === 1 && renderSection('Datos de la Última Hora', lastHourData, previousHourData)}
-          {tabValue === 2 && renderSection('Datos del Último Día', lastDayData, previousDayData)}
-          {tabValue === 3 && renderSection('Datos del Último Mes', lastMonthData, previousMonthData)}
-          {tabValue === 4 && renderCustomRangeSection()} 
+          {tabValue === 1 && renderSection('Datos del Último Mes', lastMonthData, previousMonthData)}
+          {tabValue === 2 && renderCustomRangeSection()}
         </>
       )}
     </Box>
